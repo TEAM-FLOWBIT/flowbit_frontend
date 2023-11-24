@@ -72,7 +72,6 @@ export default function Community() {
     handleSubmit: formSubmit,
     formState: { errors: formErrors, isValid: formIsValid },
     watch: titleWatch,
-    setValue,
     setError,
     reset,
   } = useForm<ListFormValues>();
@@ -96,14 +95,24 @@ export default function Community() {
   };
 
   const handleRegister = (data: ListFormValues) => {
+    const files = images.map((image) => image.file);
+    data.images = files;
     alert(JSON.stringify(data, null, 2));
     handleReset();
   };
 
-  const [images, setImages] = useState<(string | null)[]>([null, null]);
+  const [images, setImages] = useState<
+    { file: File | null; preview: string | null }[]
+  >([
+    { file: null, preview: null },
+    { file: null, preview: null },
+  ]);
 
   const handleReset = () => {
-    setImages([null, null]); // 이미지 상태 초기화
+    setImages([
+      { file: null, preview: null },
+      { file: null, preview: null },
+    ]);
     reset(); // 리액트 훅 폼 초기화
   };
 
@@ -131,7 +140,6 @@ export default function Community() {
               register={formRegister}
               errors={formErrors}
               watch={titleWatch}
-              setValue={setValue}
               setError={setError}
               images={images}
               setImages={setImages}

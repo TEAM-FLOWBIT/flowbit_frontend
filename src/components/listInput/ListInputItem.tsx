@@ -66,17 +66,20 @@ const LargeInput = styled.textarea<BaseInputProps>`
   &:focus {
     outline: none;
   }
+
   &::-webkit-scrollbar {
-    width: 0.5rem;
-    margin: 2px;
+    width: 0.6rem;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: blue;
-    border-color: #48519b;
-    border-radius: 1rem;
+    border-radius: 0.3rem;
+    border: 0.1rem solid #48519b;
+    background: linear-gradient(93deg, #fa00ff, #0085ff);
   }
+
   &[type="file"] {
+    color: transparent;
     pointer-events: none;
   }
 `;
@@ -128,7 +131,7 @@ const BaseInputImageBox = styled.div`
 `;
 
 export default function ListInputItem({
-  images, // 이미지 상태 받아옴
+  images,
   setImages,
   ...props
 }: ListInputItemProps) {
@@ -160,15 +163,9 @@ export default function ListInputItem({
         reader.onloadend = () => {
           setImages?.((images) => {
             const newImages = [...images];
-            newImages[index] = reader.result as string;
+            newImages[index] = { file, preview: reader.result as string };
             return newImages;
           });
-          // 이미지 파일 자체를 Form 상태에 반영
-          if (props.setValue) {
-            const newImages = [...(props.watch?.("images") || [])];
-            newImages[index] = file;
-            props.setValue("images", newImages);
-          }
         };
 
         if (file) {
@@ -176,6 +173,37 @@ export default function ListInputItem({
         }
       }
     };
+
+  const renderImageInput = (index: number) => {
+    return (
+      <label>
+        {images?.[index]?.preview ? (
+          <img
+            src={images?.[index]?.preview || undefined}
+            alt="preview"
+            onClick={(e) => {
+              e.preventDefault();
+              setImages?.((images) => {
+                const newImages = [...images];
+                newImages[index] = { file: null, preview: null };
+                return newImages;
+              });
+            }}
+            tabIndex={0}
+          />
+        ) : (
+          <ImageBox />
+        )}
+        <input
+          key={images?.[index]?.preview}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange(index)}
+        />
+      </label>
+    );
+  };
+
   return (
     <BaseInputLayout>
       <BaseInputName hasError={hasError}>{props.title}</BaseInputName>
@@ -191,64 +219,8 @@ export default function ListInputItem({
           />
           {props.type === "file" && (
             <BaseInputImageBox>
-              <label>
-                {images?.[0] ? (
-                  <img
-                    src={images[0]}
-                    alt="preview"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setImages?.((images) => {
-                        const newImages = [...images];
-                        newImages[0] = null;
-                        return newImages;
-                      });
-                      if (props.setValue && props.watch) {
-                        const newImages = [...props.watch("images")];
-                        newImages[0] = null;
-                        props.setValue("images", newImages);
-                      }
-                    }}
-                    tabIndex={0}
-                  />
-                ) : (
-                  <ImageBox />
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange(0)}
-                />
-              </label>
-              <label>
-                {images?.[1] ? (
-                  <img
-                    src={images[1]}
-                    alt="preview"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setImages?.((images) => {
-                        const newImages = [...images];
-                        newImages[1] = null;
-                        return newImages;
-                      });
-                      if (props.setValue && props.watch) {
-                        const newImages = [...props.watch("images")];
-                        newImages[1] = null;
-                        props.setValue("images", newImages);
-                      }
-                    }}
-                    tabIndex={0}
-                  />
-                ) : (
-                  <ImageBox />
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange(1)}
-                />
-              </label>
+              {renderImageInput(0)}
+              {renderImageInput(1)}
             </BaseInputImageBox>
           )}
         </>
