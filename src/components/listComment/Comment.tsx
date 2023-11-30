@@ -51,6 +51,16 @@ const CommentInput = styled.textarea`
   &:focus {
     outline: none;
   }
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0.3rem;
+    border: 0.1rem solid #48519b;
+    background: linear-gradient(93deg, #fa00ff, #0085ff);
+  }
 `;
 
 export default function Comment({ comments }: { comments: CommentProps[] }) {
