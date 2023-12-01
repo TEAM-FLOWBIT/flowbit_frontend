@@ -125,9 +125,21 @@ const BaseInputImageBox = styled.div`
   svg {
     width: 8rem;
     height: 8rem;
-    cursor: pointer;
     border-radius: 0.6rem;
   }
+`;
+
+const DeleteButton = styled.div`
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 `;
 
 export default function ListInputItem({
@@ -178,21 +190,34 @@ export default function ListInputItem({
     return (
       <label>
         {images?.[index]?.preview ? (
-          <img
-            src={images?.[index]?.preview || undefined}
-            alt="preview"
-            onClick={(e) => {
-              e.preventDefault();
-              setImages?.((images) => {
-                const newImages = [...images];
-                newImages[index] = { file: null, preview: null };
-                return newImages;
-              });
-            }}
-            tabIndex={0}
-          />
+          <div style={{ position: "relative" }}>
+            <img
+              src={images?.[index]?.preview || undefined}
+              alt="preview"
+              tabIndex={0}
+            />
+            <DeleteButton
+              onClick={(e) => {
+                e.preventDefault();
+                setImages?.((images) => {
+                  const newImages = [...images];
+                  newImages[index] = { file: null, preview: null };
+                  return newImages;
+                });
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+              </svg>
+            </DeleteButton>
+          </div>
         ) : (
-          <ImageBox />
+          <ImageBox style={{ cursor: "pointer" }} />
         )}
         <input
           key={images?.[index]?.preview}
