@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BaseInputProps, ListInputItemProps } from "./types";
 import { ReactComponent as ErrorIcon } from "../../assets/ErrorIcon.svg";
 import { ReactComponent as ImageBox } from "../../assets/ImageBox.svg";
+import { ReactComponent as ImageDelete } from "../../assets/ImageDelete.svg";
 
 const BaseInputLayout = styled.div`
   position: relative;
@@ -131,15 +132,23 @@ const BaseInputImageBox = styled.div`
 
 const DeleteButton = styled.div`
   position: absolute;
-  right: 0.5rem;
-  top: 0.5rem;
-  width: 1.6rem;
-  height: 1.6rem;
-  color: white;
+  right: 0;
+  top: 0;
+  width: 1.4375rem;
+  height: 1.4375rem;
+  border-radius: 0rem 0.6rem 0rem 0rem;
+  border-bottom: 1px solid #48519b;
+  border-left: 1px solid #48519b;
+  background: rgba(37, 57, 88, 0.35);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   cursor: pointer;
+  & > svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
 `;
 
 export default function ListInputItem({
@@ -206,14 +215,7 @@ export default function ListInputItem({
                 });
               }}
             >
-              <svg
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-              </svg>
+              <ImageDelete />
             </DeleteButton>
           </div>
         ) : (
