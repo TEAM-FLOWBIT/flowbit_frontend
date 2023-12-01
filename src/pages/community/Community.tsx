@@ -88,10 +88,12 @@ export default function Community() {
   // 페이지 이동 함수
   const goToNextPage = () => {
     setCurrentPage((page) => Math.min(page + 1, totalPages));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const goToPreviousPage = () => {
     setCurrentPage((page) => Math.max(page - 1, 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRegister = (data: ListFormValues) => {
