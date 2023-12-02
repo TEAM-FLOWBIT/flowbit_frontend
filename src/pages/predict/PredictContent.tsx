@@ -1,5 +1,7 @@
-import styled from "styled-components";
-import ProgressCircle from "./ProgressCircle";
+import styled from 'styled-components';
+import ProgressCircle from './ProgressCircle';
+import Chart, { ChartDataType } from '../../utils/Chart';
+import { useEffect, useState } from 'react';
 
 const PredictContentLayout = styled.div`
   padding: 18.4rem 0 19rem 0;
@@ -154,13 +156,58 @@ const PredictBTCText = styled.p`
   }
 `;
 
-export default function PredictContent() {
+const setChart = (chartDatas: ChartDataType[]) => {
+  const chart = new Chart({
+    targetId: 'flowbitChart',
+    size: {
+      width: 1500,
+      height: 790,
+      font: 15,
+    },
+    datas: chartDatas,
+    labels: [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+      '11',
+      '12',
+      '13',
+      '14',
+    ],
+  });
+
+  chart.render();
+};
+
+export default function PredictContent({
+  chartDatas,
+}: {
+  chartDatas: ChartDataType[];
+}) {
+  const [isFirst, setIsFirst] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (isFirst) {
+      setChart(chartDatas);
+      setIsFirst(false);
+    }
+  }, [chartDatas, isFirst]);
+
   return (
     <PredictContentLayout>
       <PredictContentWrapper>
         <PredictGraphContainer>
           <PredictContentTitle>BTC 예측 그래프</PredictContentTitle>
-          <PredictGraphBox />
+          <PredictGraphBox>
+            <div id="flowbitChart"></div>
+          </PredictGraphBox>
         </PredictGraphContainer>
         <PredictContentContainer>
           <PredictContentBox>
