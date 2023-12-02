@@ -14,7 +14,6 @@ export default function ListInput({
   register,
   errors,
   watch,
-  setValue,
   setError,
   images, // 이미지 상태 받아옴
   setImages,
@@ -58,7 +57,6 @@ export default function ListInput({
         name="images"
         register={register}
         errors={errors}
-        setValue={setValue}
         size="l"
         type="file"
         setError={setError}

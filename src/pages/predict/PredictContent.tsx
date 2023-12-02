@@ -48,14 +48,16 @@ const PredictContentBox = styled.div`
   gap: 1.4rem;
 `;
 
-const PredictResult = styled.ul`
+const PredictResult = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 2.1rem;
   width: 51rem;
   height: 23rem;
-  padding: 0 2.21rem 0 4.85rem;
+  max-height: 23rem;
+  overflow-y: auto;
+  padding: 3.2rem 2.21rem 3.2rem 4.85rem;
   border-radius: 1.5rem;
   border: 1px solid #48519b;
   background: rgba(37, 57, 88, 0.35);
@@ -63,9 +65,20 @@ const PredictResult = styled.ul`
   font-size: 1.5rem;
   font-weight: 400;
   line-height: normal;
+  box-sizing: border-box;
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    border: 0.1rem solid #48519b;
+    background: linear-gradient(93deg, #fa00ff, #0085ff);
+  }
 `;
 
-const PredictResultData = styled.li`
+const PredictResultData = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

@@ -4,7 +4,6 @@ import {
   RegisterOptions,
   DeepMap,
   FieldError,
-  UseFormSetValue,
   UseFormSetError,
 } from "react-hook-form";
 
@@ -17,10 +16,11 @@ export interface ListInputProps {
   register: any;
   errors: DeepMap<FieldValues, FieldError>;
   watch?: (name?: string) => any;
-  setValue?: UseFormSetValue<ListFormValues>;
   setError?: UseFormSetError<ListFormValues>;
-  images?: (string | null)[];
-  setImages?: Dispatch<SetStateAction<(string | null)[]>>;
+  images?: { file: File | null; preview: string | null }[];
+  setImages?: Dispatch<
+    SetStateAction<{ file: File | null; preview: string | null }[]>
+  >;
 }
 
 export interface ListInputItemProps extends ListInputProps {
@@ -38,6 +38,6 @@ export interface ListInputItemProps extends ListInputProps {
 export interface ListFormValues {
   title: string;
   content: string;
-  images: (string | null)[];
+  images: (File | null)[];
   price: number;
 }

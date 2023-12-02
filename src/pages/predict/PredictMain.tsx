@@ -1,6 +1,18 @@
 import styled, { keyframes } from "styled-components";
 
+const PredictMainBanner = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: calc(100vh - 9.2rem);
+  align-items: center;
+  justify-content: center;
+`;
+
 const PredictGradationTop = styled.div`
+  position: absolute;
+  top: 0;
+  width: 100%;
   height: 14.2rem;
   background: linear-gradient(
     180deg,
@@ -10,6 +22,9 @@ const PredictGradationTop = styled.div`
 `;
 
 const PredictGradationBottom = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   height: 14.2rem;
   background: linear-gradient(
     0deg,
@@ -72,7 +87,7 @@ const RotatingCircle = styled.circle`
 
 export default function PredictMain() {
   return (
-    <div>
+    <PredictMainBanner>
       <PredictGradationTop />
       <PredictMainLayout>
         <PredictMainTitle>
@@ -145,6 +160,6 @@ export default function PredictMain() {
         </PredictMainContent>
       </PredictMainLayout>
       <PredictGradationBottom />
-    </div>
+    </PredictMainBanner>
   );
 }
