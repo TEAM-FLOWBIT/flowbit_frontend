@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled, { css, keyframes } from "styled-components";
+import React, { useEffect, useRef, useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 
 const SvgWrapper = styled.div`
   width: 12.9706rem;
@@ -54,6 +54,7 @@ const ProgressCircle = ({ percentage }: { percentage: number }) => {
 
     return () => {
       if (svgWrapperRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         observer.unobserve(svgWrapperRef.current);
       }
     };
