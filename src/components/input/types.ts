@@ -3,12 +3,12 @@ import {
   RegisterOptions,
   DeepMap,
   FieldError,
-} from "react-hook-form";
+} from 'react-hook-form';
 
 export interface InputProps {
   title: string;
   placeholder: string;
-  name: keyof FormValues;
+  name: string;
   register: any;
   rules?: RegisterOptions;
   errors: DeepMap<FieldValues, FieldError>;
@@ -16,8 +16,9 @@ export interface InputProps {
 }
 
 export interface FormValues {
-  id: string;
+  userId: string;
   password: string;
   name: string;
-  number: string;
+  phone: string;
+  profileFile: FileList;
 }

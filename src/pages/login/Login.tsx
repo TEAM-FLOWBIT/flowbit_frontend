@@ -1,11 +1,12 @@
-import styled from "styled-components";
-import Header from "../../components/header/Header";
-import Input from "../../components/input/Input";
-import { useForm } from "react-hook-form";
-import { FormValues } from "../../components/input/types";
-import Footer from "../../components/footer/Footer";
-import { Button } from "../../components/button/Button";
-import { Link } from "react-router-dom";
+import styled from 'styled-components';
+import Header from '../../components/header/Header';
+import Input from '../../components/input/Input';
+import { useForm } from 'react-hook-form';
+import { FormValues } from '../../components/input/types';
+import Footer from '../../components/footer/Footer';
+import { Button } from '../../components/button/Button';
+import { Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
 const LoginLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -71,10 +72,23 @@ export default function Login() {
     register: formRegister,
     handleSubmit: formSubmit,
     formState: { errors: formErrors, isValid: formIsValid },
-  } = useForm<FormValues>();
+  } = useForm<FormData>();
 
-  const handleLogin = (data: FormValues) => {
-    alert(`로그인 성공! ID: ${data.id}, 비밀번호: ${data.password}`);
+  const signInMutation = useMutation({
+    mutationFn: (formData: FormData) => {
+      return fetch(
+        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member/login',
+        {
+          method: 'POST',
+          body: JSON.stringify(formData),
+        }
+      ).then((response) => console.log(response.json()));
+    },
+  });
+
+  const handleLogin = (data: FormData) => {
+    console.log(data);
+    signInMutation.mutate(data);
   };
 
   return (
@@ -88,15 +102,15 @@ export default function Login() {
             이용하세요.
           </LoginSubTitle>
         </LoginTitle>
-        <LoginForm onSubmit={formSubmit(handleLogin)}>
+        <LoginForm id="loginForm" onSubmit={formSubmit(handleLogin)}>
           <LoginInputBox>
             <Input
               title="아이디"
-              name="id"
+              name="userId"
               placeholder="아이디를 입력하세요"
               register={formRegister}
               rules={{
-                required: "아이디가 필요해요!",
+                required: '아이디가 필요해요!',
               }}
               errors={formErrors}
             />
@@ -107,7 +121,7 @@ export default function Login() {
               placeholder="비밀번호를 입력하세요"
               register={formRegister}
               rules={{
-                required: "비밀번호가 필요해요!",
+                required: '비밀번호가 필요해요!',
               }}
               errors={formErrors}
             />

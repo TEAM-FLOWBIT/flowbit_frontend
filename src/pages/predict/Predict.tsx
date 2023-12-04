@@ -108,6 +108,7 @@ const testDataList: ChartDataType[] = [
   },
 ];
 export default function Predict() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [chartDatas, setChartDatas] = useState<ChartDataType[]>(testDataList);
   return (
     <PredictLayout>
