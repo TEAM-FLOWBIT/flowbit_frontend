@@ -1,11 +1,12 @@
-import styled from "styled-components";
-import Header from "../../components/header/Header";
-import Input from "../../components/input/Input";
-import { useForm } from "react-hook-form";
-import { FormValues } from "../../components/input/types";
-import Footer from "../../components/footer/Footer";
-import { Button } from "../../components/button/Button";
-import { Link } from "react-router-dom";
+import styled from 'styled-components';
+import Header from '../../components/header/Header';
+import Input from '../../components/input/Input';
+import { useForm } from 'react-hook-form';
+import { FormValues } from '../../components/input/types';
+import Footer from '../../components/footer/Footer';
+import { Button } from '../../components/button/Button';
+import { Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
 const SignUpLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -61,8 +62,32 @@ export default function SignUp() {
     formState: { errors: formErrors, isValid: formIsValid },
   } = useForm<FormValues>();
 
-  const handleSignUp = () => {
-    alert("회원가입 성공!");
+  const signUpMutaion = useMutation({
+    mutationFn: (formData: FormData) => {
+      return fetch(
+        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+        });
+    },
+  });
+
+  const handleSignUp = (data: FormValues) => {
+    let formData = new FormData();
+
+    formData.append('userId', data.userId);
+    formData.append('name', data.name);
+    formData.append('nickname', data.name);
+    formData.append('phone', data.phone);
+    formData.append('password', data.password);
+    data.profileFile[0] && formData.append('profileFile', data.profileFile[0]);
+    signUpMutaion.mutate(formData);
   };
 
   return (
@@ -73,12 +98,20 @@ export default function SignUp() {
         <SignUpForm onSubmit={formSubmit(handleSignUp)}>
           <SignUpInputBox>
             <Input
+              title="프로파일"
+              name="profileFile"
+              type="file"
+              placeholder={''}
+              register={formRegister}
+              errors={formErrors}
+            />
+            <Input
               title="아이디"
-              name="id"
+              name="userId"
               placeholder="아이디를 입력하세요"
               register={formRegister}
               rules={{
-                required: "아이디가 필요해요!",
+                required: '아이디가 필요해요!',
               }}
               errors={formErrors}
             />
@@ -89,7 +122,7 @@ export default function SignUp() {
               placeholder="비밀번호를 입력하세요"
               register={formRegister}
               rules={{
-                required: "비밀번호가 필요해요!",
+                required: '비밀번호가 필요해요!',
               }}
               errors={formErrors}
             />
@@ -99,17 +132,17 @@ export default function SignUp() {
               placeholder="이름을 입력하세요"
               register={formRegister}
               rules={{
-                required: "이름이 필요해요!",
+                required: '이름이 필요해요!',
               }}
               errors={formErrors}
             />
             <Input
               title="전화번호"
-              name="number"
+              name="phone"
               placeholder="전화번호를 입력하세요"
               register={formRegister}
               rules={{
-                required: "전화번호가 필요해요!",
+                required: '전화번호가 필요해요!',
               }}
               errors={formErrors}
             />
