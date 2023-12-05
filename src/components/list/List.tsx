@@ -96,6 +96,8 @@ const ListImageBox = styled.div`
   }
 `;
 
+const baseURL = "https://likelionvideo.s3.ap-northeast-2.amazonaws.com/";
+
 export default function List({ ...props }: ListProps) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -103,13 +105,21 @@ export default function List({ ...props }: ListProps) {
     setShowDetails(!showDetails);
   };
 
+  // profile과 imagePath에 baseURL을 붙여 완전한 URL을 만듭니다.
+  const profileURL = props.profile
+    ? baseURL + props.profile
+    : baseURL + "flowbit-default-profile.png";
+  const imagePathURLs = props.imagePath
+    ? props.imagePath.map((path) => baseURL + path)
+    : [];
+
   return (
     <ListWithComment>
       <ListLayout>
         <ListContainer>
           <ListBox>
             {props.profile ? (
-              <ListProfile src={props.profile} alt="Profile" />
+              <ListProfile src={profileURL} alt="Profile" />
             ) : (
               <DefaultProfile />
             )}
@@ -119,9 +129,9 @@ export default function List({ ...props }: ListProps) {
               <ListContent>{props.content}</ListContent>
               {showDetails && (
                 <>
-                  {props.imagePath && props.imagePath.length > 0 && (
+                  {imagePathURLs && imagePathURLs.length > 0 && (
                     <ListImageBox>
-                      {props.imagePath.map((item, index) => (
+                      {imagePathURLs.map((item, index) => (
                         <img key={index} src={item} alt="contentImage" />
                       ))}
                     </ListImageBox>
