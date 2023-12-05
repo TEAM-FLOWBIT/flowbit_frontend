@@ -13,7 +13,7 @@
     "@types/node": "^16.18.62",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
-    "http-proxy-middleware": "^2.0.6",
+    "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
@@ -26,7 +26,6 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
-  "proxy": "https://apigateway.apps.sys.paas-ta-dev10.kr/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

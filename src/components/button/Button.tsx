@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { ButtonProps } from "./types";
+import styled from 'styled-components';
+import { ButtonProps } from './types';
 
 const LoginButton = styled.button<ButtonProps>`
   width: 48rem;
@@ -18,17 +18,17 @@ const LoginButton = styled.button<ButtonProps>`
   font-weight: 600;
   line-height: normal;
   border: none;
-  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
-  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
 const BaseButton = styled.button<ButtonProps>`
-  width: ${(props) => (props.size === "s" ? "8rem" : "16rem")};
-  height: ${(props) => (props.size === "s" ? "3rem" : "5rem")};
+  width: ${(props) => (props.size === 's' ? '8rem' : '16rem')};
+  height: ${(props) => (props.size === 's' ? '3rem' : '5rem')};
   text-align: center;
-  border-radius: ${(props) => (props.size === "s" ? "0.4rem" : "1rem")};
+  border-radius: ${(props) => (props.size === 's' ? '0.4rem' : '1rem')};
   font-family: Pretendard Variable;
-  font-size: ${(props) => (props.size === "s" ? "1.2rem" : "1.5rem")};
+  font-size: ${(props) => (props.size === 's' ? '1.2rem' : '1.5rem')};
   font-weight: 500;
   line-height: normal;
   border: none;
@@ -38,11 +38,11 @@ const BaseButton = styled.button<ButtonProps>`
 const RegisterButton = styled(BaseButton)`
   background: ${(props) =>
     props.disabled
-      ? "rgba(74, 92, 119, 0.35)"
-      : "linear-gradient(91deg, rgba(240, 6, 255, 0.40) 0.43%, rgba(16, 124, 255, 0.40) 111.85%)"};
-  color: ${(props) => (props.disabled ? "#5B5F8A" : "#fff")};
-  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
-  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+      ? 'rgba(74, 92, 119, 0.35)'
+      : 'linear-gradient(91deg, rgba(240, 6, 255, 0.40) 0.43%, rgba(16, 124, 255, 0.40) 111.85%)'};
+  color: ${(props) => (props.disabled ? '#5B5F8A' : '#fff')};
+  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 `;
 
 const DeleteButton = styled(BaseButton)`
@@ -64,7 +64,7 @@ export function SizeButton({
 }: ButtonProps) {
   return (
     <>
-      {type === "submit" ? (
+      {type === 'submit' ? (
         <RegisterButton size={size} disabled={disabled} type={type}>
           {children}
         </RegisterButton>

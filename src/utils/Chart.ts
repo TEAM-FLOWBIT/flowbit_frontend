@@ -279,6 +279,7 @@ class Chart {
     ]);
 
     // xLabel
+    // eslint-disable-next-line array-callback-return
     this.labels.map((label, i) => {
       let x =
         (i / (this.xAxisCount - 1)) *
