@@ -1,15 +1,7 @@
-import styled from 'styled-components';
-import Header from '../../components/header/Header';
 import PredictMain from './PredictMain';
 import PredictContent from './PredictContent';
-import Footer from '../../components/footer/Footer';
 import { ChartDataType } from '../../utils/Chart';
 import { useState } from 'react';
-
-const PredictLayout = styled.div`
-  background: linear-gradient(180deg, #040108 0%, #250061 100%);
-  min-height: 100vh;
-`;
 
 let testMax = 50000000;
 let testMin = 30000000;
@@ -111,11 +103,9 @@ export default function Predict() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [chartDatas, setChartDatas] = useState<ChartDataType[]>(testDataList);
   return (
-    <PredictLayout>
-      <Header />
+    <>
       <PredictMain />
       <PredictContent chartDatas={chartDatas} />
-      <Footer />
-    </PredictLayout>
+    </>
   );
 }
