@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { ReactComponent as DefaultProfile } from "../../assets/DefaultProfile.svg";
-import RateBox from "./RateBox";
 import { useState } from "react";
 import { ListProps } from "./types";
 import Comment from "../listComment/Comment";
@@ -103,6 +102,7 @@ export default function List({ ...props }: ListProps) {
   const handleClick = () => {
     setShowDetails(!showDetails);
   };
+
   return (
     <ListWithComment>
       <ListLayout>
@@ -119,15 +119,12 @@ export default function List({ ...props }: ListProps) {
               <ListContent>{props.content}</ListContent>
               {showDetails && (
                 <>
-                  {props.images && props.images.length > 0 && (
+                  {props.imagePath && props.imagePath.length > 0 && (
                     <ListImageBox>
-                      {props.images.map((item, index) => (
+                      {props.imagePath.map((item, index) => (
                         <img key={index} src={item} alt="contentImage" />
                       ))}
                     </ListImageBox>
-                  )}
-                  {props.price && props.rate && (
-                    <RateBox price={props.price} rate={props.rate} />
                   )}
                 </>
               )}

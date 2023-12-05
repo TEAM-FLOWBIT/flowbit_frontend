@@ -86,7 +86,7 @@ export default function Comment({ comments }: { comments: CommentProps[] }) {
         <CommentItemBox>
           {comments.map((comment) => (
             <CommentItem
-              rid={comment.rid}
+              commentId={comment.commentId}
               profile={comment.profile}
               name={comment.name}
               content={comment.content}

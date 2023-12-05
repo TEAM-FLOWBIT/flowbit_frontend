@@ -1,17 +1,16 @@
 export interface ListProps extends RateBoxProps {
-  rid: number;
+  boardId: number;
   profile?: string;
   name: string;
   title: string;
   content: string;
-  comment: number;
-  images?: any[];
+  imagePath?: string[];
   comments?: CommentProps[];
   mine?: boolean;
 }
 
 export interface CommentProps {
-  rid: number;
+  commentId: number;
   profile?: string;
   name: string;
   content: string;

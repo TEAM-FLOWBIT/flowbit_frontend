@@ -172,7 +172,7 @@ export default function ListInputItem({
         if (file && !file.type.startsWith("image/")) {
           // setError 함수가 있는지 확인
           if (props.setError) {
-            props.setError("images", {
+            props.setError("pictures", {
               type: "fileType",
               message: "올바른 형태가 아닙니다",
             });

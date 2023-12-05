@@ -38,6 +38,6 @@ export interface ListInputItemProps extends ListInputProps {
 export interface ListFormValues {
   title: string;
   content: string;
-  images: (File | null)[];
+  pictures: (File | null)[];
   price: number;
 }

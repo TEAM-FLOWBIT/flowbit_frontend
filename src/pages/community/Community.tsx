@@ -1,14 +1,15 @@
 import styled from "styled-components";
 import Header from "../../components/header/Header";
 import List from "../../components/list/List";
-import { useState } from "react";
-import { items } from "./data";
+import { useEffect, useState } from "react";
 import Pagination from "./Pagination";
 import ListInput from "../../components/listInput/ListInput";
 import { useForm } from "react-hook-form";
 import { ListFormValues } from "../../components/listInput/types";
 import { SizeButton } from "../../components/button/Button";
 import Footer from "../../components/footer/Footer";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ListProps } from "../../components/list/types";
 
 const CommunityLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -64,8 +65,8 @@ const CommunityBtn = styled.div`
 
 export default function Community() {
   // 상태로 현재 페이지를 추적
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // 페이지당 항목 수
+  const [currentPage, setCurrentPage] = useState(0);
+  const [isLastPage, setIsLastPage] = useState(false);
 
   const {
     register: formRegister,
@@ -76,33 +77,6 @@ export default function Community() {
     reset,
   } = useForm<ListFormValues>();
 
-  // 전체 페이지 수 계산
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-
-  // 현재 페이지의 항목만 필터링
-  const currentItems = items.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // 페이지 이동 함수
-  const goToNextPage = () => {
-    setCurrentPage((page) => Math.min(page + 1, totalPages));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const goToPreviousPage = () => {
-    setCurrentPage((page) => Math.max(page - 1, 1));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleRegister = (data: ListFormValues) => {
-    const files = images.map((image) => image.file);
-    data.images = files;
-    alert(JSON.stringify(data, null, 2));
-    handleReset();
-  };
-
   const [images, setImages] = useState<
     { file: File | null; preview: string | null }[]
   >([
@@ -110,12 +84,89 @@ export default function Community() {
     { file: null, preview: null },
   ]);
 
+  // 페이지 이동 함수
+  const goToNextPage = async () => {
+    const nextPage = currentPage + 1;
+    const nextPageData = await CommunityQuery(nextPage);
+    if (nextPageData && nextPageData.data.content.length > 0) {
+      setCurrentPage(nextPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage !== 0) {
+      setCurrentPage((page) => Math.max(page - 1, 0));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const handleReset = () => {
     setImages([
       { file: null, preview: null },
       { file: null, preview: null },
     ]);
     reset(); // 리액트 훅 폼 초기화
+  };
+
+  const queryClient = useQueryClient();
+
+  const CommunityQuery = async (page: number) => {
+    const response = await fetch(
+      `https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board?searchword=제목&page=${page}&size=6`
+    );
+    const data = await response.json();
+    return data;
+  };
+
+  const { data, isSuccess } = useQuery({
+    queryKey: ["community", currentPage],
+    queryFn: () => CommunityQuery(currentPage),
+  });
+
+  useEffect(() => {
+    if (data && data.data.content.length < 6) {
+      setIsLastPage(true);
+    } else {
+      setIsLastPage(false);
+    }
+  }, [data]);
+
+  const CommunityMutation = useMutation({
+    mutationFn: (formData: FormData) => {
+      return fetch(
+        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board",
+        {
+          method: "POST",
+          body: formData,
+        }
+      )
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    onSuccess: () => {
+      handleReset();
+      queryClient.invalidateQueries({
+        queryKey: ["community"],
+      });
+    },
+  });
+
+  const handleRegister = (data: ListFormValues) => {
+    let formData = new FormData();
+
+    const files = images.map((image) => image.file);
+    data.pictures = files;
+
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    data.pictures[0] && formData.append("pictures", data.pictures[0]);
+    data.pictures[1] && formData.append("pictures", data.pictures[1]);
+    CommunityMutation.mutate(formData);
   };
 
   return (
@@ -126,13 +177,14 @@ export default function Community() {
           <CommunityTitle>커뮤니티</CommunityTitle>
           <CommunityListContainer>
             <CommunityListBox>
-              {currentItems.map((item) => (
-                <List key={item.rid} {...item} />
-              ))}
+              {isSuccess &&
+                data?.data.content.map((item: ListProps) => (
+                  <List key={item.boardId} {...item} />
+                ))}
             </CommunityListBox>
             <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
+              isFirstPage={currentPage === 0}
+              isLastPage={isLastPage}
               goToNextPage={goToNextPage}
               goToPreviousPage={goToPreviousPage}
             />

@@ -54,7 +54,7 @@ export default function ListInput({
         withNumber={false}
         title="사진"
         placeholder=""
-        name="images"
+        name="pictures"
         register={register}
         errors={errors}
         size="l"
