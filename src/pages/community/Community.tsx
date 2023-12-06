@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Header from "../../components/header/Header";
 import List from "../../components/list/List";
 import { useEffect, useState } from "react";
 import Pagination from "./Pagination";
@@ -10,6 +9,8 @@ import { SizeButton } from "../../components/button/Button";
 import Footer from "../../components/footer/Footer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ListProps } from "../../components/list/types";
+import { useAuth } from "../../hooks/context/auth";
+import axios from "axios";
 
 const CommunityLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -132,21 +133,25 @@ export default function Community() {
     }
   }, [data]);
 
+  const { auth } = useAuth();
+
   const CommunityMutation = useMutation({
     mutationFn: (formData: FormData) => {
-      return fetch(
+      /*return fetch(
         "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board",
         {
           method: "POST",
           body: formData,
         }
-      )
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      ).then((result) => {
+        console.log(result);
+        console.log(auth);
+      });*/
+      return axios.post(
+        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board",
+        JSON.stringify(formData),
+        { headers: { Authorization: `Bearer ${auth}` }, withCredentials: true }
+      );
     },
     onSuccess: () => {
       handleReset();
@@ -171,7 +176,6 @@ export default function Community() {
 
   return (
     <CommunityLayout>
-      <Header />
       <CommunityContainer>
         <CommunityBox>
           <CommunityTitle>커뮤니티</CommunityTitle>
