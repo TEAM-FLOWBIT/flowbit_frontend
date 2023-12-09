@@ -6,10 +6,9 @@ import ListInput from '../../components/listInput/ListInput';
 import { useForm } from 'react-hook-form';
 import { ListFormValues } from '../../components/listInput/types';
 import { SizeButton } from '../../components/button/Button';
-import Footer from '../../components/footer/Footer';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ListProps } from '../../components/list/types';
-import { useAuth } from '../../hooks/context/auth';
+import { useMember } from '../../hooks/context/auth';
 import axios from 'axios';
 
 const CommunityLayout = styled.div`
@@ -133,19 +132,19 @@ export default function Community() {
     }
   }, [data]);
 
-  const { auth } = useAuth();
+  const { member } = useMember();
 
   const CommunityMutation = useMutation({
     mutationFn: (formData: FormData) => {
       return axios.post('/user-service/api/v1/board', formData, {
         headers: {
-          Authorization: `Bearer ${auth}`,
+          Authorization: `Bearer ${member?.auth}`,
         },
       });
     },
     onSuccess: () => {
       handleReset();
-      // TODO Tag Community 데이터 추가
+      // TODO refetching이 아닌 단순 데이터 추가로 로직 변경 예정
       queryClient.invalidateQueries({
         queryKey: ['community'],
       });
@@ -153,7 +152,6 @@ export default function Community() {
       alert('성공적으로 등록되었습니다.');
     },
     onError: (error) => {
-      console.log(auth);
       console.log(error);
 
       alert('현재 서버에 문제가 있습니다.');

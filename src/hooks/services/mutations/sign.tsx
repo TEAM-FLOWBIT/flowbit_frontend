@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { useAuth } from '../../context/auth';
+import { useMember } from '../../context/auth';
 import axios from 'axios';
 
 export function UseSignMutation() {
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
+  const { setMember } = useMember();
 
   const signInMutation = useMutation({
     mutationFn: (formData: FormData) => {
@@ -18,7 +18,10 @@ export function UseSignMutation() {
       );
     },
     onSuccess(response: any) {
-      setAuth && setAuth(response.data.accessToken);
+      setMember &&
+        setMember((prev) => {
+          return { ...prev, auth: response.data.accessToken };
+        });
       alert('로그인 성공');
       navigate('/');
     },
