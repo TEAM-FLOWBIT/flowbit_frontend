@@ -1,16 +1,16 @@
-import styled from "styled-components";
-import List from "../../components/list/List";
-import { useEffect, useState } from "react";
-import Pagination from "./Pagination";
-import ListInput from "../../components/listInput/ListInput";
-import { useForm } from "react-hook-form";
-import { ListFormValues } from "../../components/listInput/types";
-import { SizeButton } from "../../components/button/Button";
-import Footer from "../../components/footer/Footer";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ListProps } from "../../components/list/types";
-import { useAuth } from "../../hooks/context/auth";
-import axios from "axios";
+import styled from 'styled-components';
+import List from '../../components/list/List';
+import { useEffect, useState } from 'react';
+import Pagination from './Pagination';
+import ListInput from '../../components/listInput/ListInput';
+import { useForm } from 'react-hook-form';
+import { ListFormValues } from '../../components/listInput/types';
+import { SizeButton } from '../../components/button/Button';
+import Footer from '../../components/footer/Footer';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ListProps } from '../../components/list/types';
+import { useAuth } from '../../hooks/context/auth';
+import axios from 'axios';
 
 const CommunityLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -91,14 +91,14 @@ export default function Community() {
     const nextPageData = await CommunityQuery(nextPage);
     if (nextPageData && nextPageData.data.content.length > 0) {
       setCurrentPage(nextPage);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const goToPreviousPage = () => {
     if (currentPage !== 0) {
       setCurrentPage((page) => Math.max(page - 1, 0));
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -121,7 +121,7 @@ export default function Community() {
   };
 
   const { data, isSuccess } = useQuery({
-    queryKey: ["community", currentPage],
+    queryKey: ['community', currentPage],
     queryFn: () => CommunityQuery(currentPage),
   });
 
@@ -136,28 +136,38 @@ export default function Community() {
   const { auth } = useAuth();
 
   const CommunityMutation = useMutation({
-    mutationFn: (formData: FormData) => {
-      /*return fetch(
-        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board",
-        {
-          method: "POST",
-          body: formData,
-        }
-      ).then((result) => {
-        console.log(result);
-        console.log(auth);
-      });*/
-      return axios.post(
-        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board",
-        JSON.stringify(formData),
-        { headers: { Authorization: `Bearer ${auth}` }, withCredentials: true }
-      );
+    mutationFn: () => {
+      return fetch('/user-service/api/v1/member/info', {
+        method: 'POST',
+        body: null,
+        credentials: 'include',
+        headers: {
+          Authorization: `Bearer ${auth}`,
+        },
+      })
+        .then((result) => {
+          console.log(result);
+          return result.json();
+        })
+        .then((result) => {
+          console.log(result);
+        });
+      // return axios.post('/user-service/api/v1/member/info', null, {
+      //   headers: {
+      //     Authorization: `Bearer ${auth}`,
+      //   },
+      // });
     },
     onSuccess: () => {
-      handleReset();
-      queryClient.invalidateQueries({
-        queryKey: ["community"],
-      });
+      console.log('성공');
+      // handleReset();
+      // queryClient.invalidateQueries({
+      //   queryKey: ['community'],
+      // });
+    },
+    onError: (error) => {
+      console.log(auth);
+      console.log(error);
     },
   });
 
@@ -167,11 +177,11 @@ export default function Community() {
     const files = images.map((image) => image.file);
     data.pictures = files;
 
-    formData.append("title", data.title);
-    formData.append("content", data.content);
-    data.pictures[0] && formData.append("pictures", data.pictures[0]);
-    data.pictures[1] && formData.append("pictures", data.pictures[1]);
-    CommunityMutation.mutate(formData);
+    formData.append('title', data.title);
+    formData.append('content', data.content);
+    data.pictures[0] && formData.append('pictures', data.pictures[0]);
+    data.pictures[1] && formData.append('pictures', data.pictures[1]);
+    CommunityMutation.mutate();
   };
 
   return (
