@@ -166,16 +166,12 @@ export default function Community() {
               setImages={setImages}
             />
             <CommunityBtn>
-              {isSuccess && (
-                <>
-                  <SizeButton size="m" type="reset" onClick={handleReset}>
-                    취소
-                  </SizeButton>
-                  <SizeButton size="m" type="submit" disabled={!formIsValid}>
-                    등록
-                  </SizeButton>
-                </>
-              )}
+              <SizeButton size="m" type="reset" onClick={handleReset}>
+                취소
+              </SizeButton>
+              <SizeButton size="m" type="submit" disabled={!formIsValid}>
+                등록
+              </SizeButton>
             </CommunityBtn>
           </CommunityForm>
         </CommunityBox>
