@@ -10,6 +10,7 @@ import {
 export interface BaseInputProps {
   hasError?: boolean;
   withNumber?: boolean;
+  preview?: string | null;
 }
 
 export interface ListInputProps {

@@ -3,7 +3,8 @@ import {
   RegisterOptions,
   DeepMap,
   FieldError,
-} from 'react-hook-form';
+  UseFormSetError,
+} from "react-hook-form";
 
 export interface InputProps {
   title: string;
@@ -13,10 +14,13 @@ export interface InputProps {
   rules?: RegisterOptions;
   errors: DeepMap<FieldValues, FieldError>;
   type?: string;
+  accept?: string;
+  setError?: UseFormSetError<FormValues>;
 }
 
 export interface FormValues {
   userId: string;
+  randomNumber: string;
   password: string;
   name: string;
   phone: string;
