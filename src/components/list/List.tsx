@@ -3,8 +3,8 @@ import { ReactComponent as DefaultProfile } from '../../assets/DefaultProfile.sv
 import { useContext, useState } from 'react';
 import { ListProps } from './types';
 import Comment from '../listComment/Comment';
-import { useDeleteBoardMutation } from '../../hooks/services/mutations/board';
-import { MemberContext } from '../../pages/Root';
+import { useDeleteBoardMutation } from '../../hooks/services/mutations/boardHook';
+import { IMG_URL, MemberContext } from '../../pages/Root';
 
 const ListWithComment = styled.div`
   display: flex;
@@ -98,8 +98,6 @@ const ListImageBox = styled.div`
   }
 `;
 
-const baseURL = 'https://likelionvideo.s3.ap-northeast-2.amazonaws.com/';
-
 export default function List({ ...props }: ListProps) {
   const [showDetails, setShowDetails] = useState(false);
   const { deleteBoardMutation } = useDeleteBoardMutation();
@@ -117,10 +115,10 @@ export default function List({ ...props }: ListProps) {
 
   // profile과 imagePath에 baseURL을 붙여 완전한 URL을 만듭니다.
   const profileURL = props.profile
-    ? baseURL + props.profile
-    : baseURL + 'flowbit-default-profile.png';
+    ? IMG_URL + props.profile
+    : IMG_URL + 'flowbit-default-profile.png';
   const imagePathURLs = props.imagePath
-    ? props.imagePath.map((path) => baseURL + path)
+    ? props.imagePath.map((path) => IMG_URL + path)
     : [];
 
   return (
@@ -167,7 +165,9 @@ export default function List({ ...props }: ListProps) {
           </ListSubBox>
         </ListContainer>
       </ListLayout>
-      {showDetails && <Comment comments={props.comments || []} />}
+      {showDetails && (
+        <Comment boardId={props.boardId} comments={props.comments || []} />
+      )}
     </ListWithComment>
   );
 }

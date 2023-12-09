@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import List from '../../components/list/List';
 import { useEffect, useState } from 'react';
 import Pagination from './Pagination';
@@ -8,7 +7,7 @@ import { ListFormValues } from '../../components/listInput/types';
 import { SizeButton } from '../../components/button/Button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ListProps } from '../../components/list/types';
-import { useMember } from '../../hooks/context/auth';
+import { useMember } from '../../hooks/context/authHook';
 import axios from 'axios';
 import {
   CommunityBox,
@@ -167,12 +166,16 @@ export default function Community() {
               setImages={setImages}
             />
             <CommunityBtn>
-              <SizeButton size="m" type="reset" onClick={handleReset}>
-                취소
-              </SizeButton>
-              <SizeButton size="m" type="submit" disabled={!formIsValid}>
-                등록
-              </SizeButton>
+              {isSuccess && (
+                <>
+                  <SizeButton size="m" type="reset" onClick={handleReset}>
+                    취소
+                  </SizeButton>
+                  <SizeButton size="m" type="submit" disabled={!formIsValid}>
+                    등록
+                  </SizeButton>
+                </>
+              )}
             </CommunityBtn>
           </CommunityForm>
         </CommunityBox>

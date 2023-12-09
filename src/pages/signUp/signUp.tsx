@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { FormValues } from '../../components/input/types';
 import { Button } from '../../components/button/Button';
 import { Link } from 'react-router-dom';
-import { UseSignMutation } from '../../hooks/services/mutations/sign';
+import { UseSignMutation } from '../../hooks/services/mutations/signHook';
 
 const SignUpContainer = styled.div`
   margin: 9.6rem auto 11.7rem auto;

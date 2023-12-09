@@ -4,7 +4,7 @@ import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import Predict from './predict/Predict';
 import styled from 'styled-components';
-import { useGetMemberInfo } from '../hooks/services/queries/auth';
+import { useGetMemberInfo } from '../hooks/services/queries/authHook';
 
 const RootLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -22,6 +22,8 @@ export interface IMember {
     profile: string;
   };
 }
+
+export const IMG_URL = 'https://likelionvideo.s3.ap-northeast-2.amazonaws.com/';
 
 interface IMemberContext {
   member: IMember;

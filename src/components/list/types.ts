@@ -12,6 +12,7 @@ export interface ListProps extends RateBoxProps {
 }
 
 export interface CommentProps {
+  memberId: number;
   commentId: number;
   profile?: string;
   name: string;

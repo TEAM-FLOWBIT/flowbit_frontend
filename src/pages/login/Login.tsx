@@ -3,7 +3,7 @@ import Input from '../../components/input/Input';
 import { useForm } from 'react-hook-form';
 import { Button } from '../../components/button/Button';
 import { Link } from 'react-router-dom';
-import { UseSignMutation } from '../../hooks/services/mutations/sign';
+import { UseSignMutation } from '../../hooks/services/mutations/signHook';
 
 const LoginContainer = styled.div`
   margin: 16.6rem auto 24.1rem auto;
