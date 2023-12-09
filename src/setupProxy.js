@@ -13,4 +13,16 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    createProxyMiddleware('/user-service/api/v1/mail', {
+      target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
+      changeOrigin: true,
+    })
+  );
+  app.use(
+    createProxyMiddleware('/user-service/api/v1/mail/verify', {
+      target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
+      changeOrigin: true,
+    })
+  );
 };
