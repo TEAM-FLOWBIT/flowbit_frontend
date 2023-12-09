@@ -114,7 +114,7 @@ export default function Community() {
 
   const CommunityQuery = async (page: number) => {
     const response = await fetch(
-      `https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board?searchword=제목&page=${page}&size=6`
+      `https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/board?page=${page}&size=6`
     );
     const data = await response.json();
     return data;
@@ -136,38 +136,27 @@ export default function Community() {
   const { auth } = useAuth();
 
   const CommunityMutation = useMutation({
-    mutationFn: () => {
-      return fetch('/user-service/api/v1/member/info', {
-        method: 'POST',
-        body: null,
-        credentials: 'include',
+    mutationFn: (formData: FormData) => {
+      return axios.post('/user-service/api/v1/board', formData, {
         headers: {
           Authorization: `Bearer ${auth}`,
         },
-      })
-        .then((result) => {
-          console.log(result);
-          return result.json();
-        })
-        .then((result) => {
-          console.log(result);
-        });
-      // return axios.post('/user-service/api/v1/member/info', null, {
-      //   headers: {
-      //     Authorization: `Bearer ${auth}`,
-      //   },
-      // });
+      });
     },
     onSuccess: () => {
-      console.log('성공');
-      // handleReset();
-      // queryClient.invalidateQueries({
-      //   queryKey: ['community'],
-      // });
+      handleReset();
+      // TODO Tag Community 데이터 추가
+      queryClient.invalidateQueries({
+        queryKey: ['community'],
+      });
+
+      alert('성공적으로 등록되었습니다.');
     },
     onError: (error) => {
       console.log(auth);
       console.log(error);
+
+      alert('현재 서버에 문제가 있습니다.');
     },
   });
 
@@ -181,7 +170,7 @@ export default function Community() {
     formData.append('content', data.content);
     data.pictures[0] && formData.append('pictures', data.pictures[0]);
     data.pictures[1] && formData.append('pictures', data.pictures[1]);
-    CommunityMutation.mutate();
+    CommunityMutation.mutate(formData);
   };
 
   return (
@@ -223,7 +212,6 @@ export default function Community() {
           </CommunityForm>
         </CommunityBox>
       </CommunityContainer>
-      <Footer />
     </CommunityLayout>
   );
 }

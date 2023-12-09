@@ -7,4 +7,10 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    createProxyMiddleware('/user-service/api/v1/board', {
+      target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
+      changeOrigin: true,
+    })
+  );
 };
