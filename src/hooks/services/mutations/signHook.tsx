@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { useMember } from '../../context/auth';
+import { useMember } from '../../context/authHook';
 import axios from 'axios';
 
 export function UseSignMutation() {
