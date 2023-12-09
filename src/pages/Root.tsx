@@ -24,11 +24,23 @@ export interface IMember {
 }
 
 interface IMemberContext {
-  member?: IMember;
+  member: IMember;
   setMember?: React.Dispatch<React.SetStateAction<IMember>>;
 }
 
-export const MemberContext = createContext<IMemberContext>({});
+export const MemberContext = createContext<IMemberContext>({
+  member: {
+    auth: '',
+    memberInfo: {
+      id: 0,
+      name: '',
+      phone: '',
+      email: '',
+      nickname: '',
+      profile: '',
+    },
+  },
+});
 
 function Root() {
   const [member, setMember] = useState<IMember>({

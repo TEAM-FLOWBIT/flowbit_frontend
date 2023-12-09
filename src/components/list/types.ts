@@ -1,4 +1,6 @@
 export interface ListProps extends RateBoxProps {
+  memberId: number;
+  memberEmail: string;
   boardId: number;
   profile?: string;
   name: string;

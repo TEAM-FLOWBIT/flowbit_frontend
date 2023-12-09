@@ -10,60 +10,21 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ListProps } from '../../components/list/types';
 import { useMember } from '../../hooks/context/auth';
 import axios from 'axios';
-
-const CommunityLayout = styled.div`
-  background: linear-gradient(180deg, #040108 0%, #250061 100%);
-  min-height: 100vh;
-`;
-
-const CommunityContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 5.4rem 0 20rem;
-  margin: 0 auto;
-`;
-
-const CommunityBox = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const CommunityListBox = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const CommunityTitle = styled.h2`
-  display: flex;
-  color: #d9d9d9;
-  font-size: 2.5rem;
-  font-weight: 600;
-  line-height: normal;
-  margin-bottom: 3rem;
-`;
-
-const CommunityListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 6rem;
-`;
-
-const CommunityForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3rem;
-`;
-
-const CommunityBtn = styled.div`
-  display: flex;
-  gap: 1.4rem;
-`;
+import {
+  CommunityBox,
+  CommunityBtn,
+  CommunityContainer,
+  CommunityForm,
+  CommunityLayout,
+  CommunityListBox,
+  CommunityListContainer,
+  CommunityTitle,
+} from './styled';
+import { QueryKey } from '../../hooks/services/QueryKey';
 
 export default function Community() {
+  const { member } = useMember();
+
   // 상태로 현재 페이지를 추적
   const [currentPage, setCurrentPage] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
@@ -120,19 +81,9 @@ export default function Community() {
   };
 
   const { data, isSuccess } = useQuery({
-    queryKey: ['community', currentPage],
+    queryKey: [QueryKey.COMMUNITY, currentPage],
     queryFn: () => CommunityQuery(currentPage),
   });
-
-  useEffect(() => {
-    if (data && data.data.content.length < 6) {
-      setIsLastPage(true);
-    } else {
-      setIsLastPage(false);
-    }
-  }, [data]);
-
-  const { member } = useMember();
 
   const CommunityMutation = useMutation({
     mutationFn: (formData: FormData) => {
@@ -146,7 +97,7 @@ export default function Community() {
       handleReset();
       // TODO refetching이 아닌 단순 데이터 추가로 로직 변경 예정
       queryClient.invalidateQueries({
-        queryKey: ['community'],
+        queryKey: [QueryKey.COMMUNITY],
       });
 
       alert('성공적으로 등록되었습니다.');
@@ -171,6 +122,14 @@ export default function Community() {
     CommunityMutation.mutate(formData);
   };
 
+  useEffect(() => {
+    if (data && data.data.content.length < 6) {
+      setIsLastPage(true);
+    } else {
+      setIsLastPage(false);
+    }
+  }, [data]);
+
   return (
     <CommunityLayout>
       <CommunityContainer>
@@ -180,7 +139,15 @@ export default function Community() {
             <CommunityListBox>
               {isSuccess &&
                 data?.data.content.map((item: ListProps) => (
-                  <List key={item.boardId} {...item} />
+                  <List
+                    key={item.boardId}
+                    {...item}
+                    mine={
+                      member?.memberInfo?.id
+                        ? item.memberId === member?.memberInfo.id
+                        : false
+                    }
+                  />
                 ))}
             </CommunityListBox>
             <Pagination
