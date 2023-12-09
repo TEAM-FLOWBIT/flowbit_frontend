@@ -1,8 +1,10 @@
-import styled from "styled-components";
-import { SizeButton } from "../button/Button";
-import CommentItem from "./CommentItem";
-import { CommentProps } from "../list/types";
-import { useState } from "react";
+import styled from 'styled-components';
+import { SizeButton } from '../button/Button';
+import CommentItem from './CommentItem';
+import { CommentProps } from '../list/types';
+import { useContext, useState } from 'react';
+import { useInsertCommentMutation } from '../../hooks/services/mutations/commentHook';
+import { IMG_URL, MemberContext } from '../../pages/Root';
 
 const CommentLayout = styled.div`
   width: 84.6rem;
@@ -63,8 +65,16 @@ const CommentInput = styled.textarea`
   }
 `;
 
-export default function Comment({ comments }: { comments: CommentProps[] }) {
-  const [comment, setComment] = useState("");
+export default function Comment({
+  comments,
+  boardId,
+}: {
+  comments: CommentProps[];
+  boardId: number;
+}) {
+  const [comment, setComment] = useState('');
+  const { insertCommentMutation } = useInsertCommentMutation();
+  const { member } = useContext(MemberContext);
 
   const handleClick = (e: { stopPropagation: () => void }) => {
     e.stopPropagation();
@@ -76,8 +86,14 @@ export default function Comment({ comments }: { comments: CommentProps[] }) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert(comment);
-    setComment("");
+    insertCommentMutation.mutate({
+      auth: member.auth,
+      formData: {
+        boardId,
+        content: comment,
+      },
+    });
+    setComment('');
   };
 
   return (
@@ -86,8 +102,9 @@ export default function Comment({ comments }: { comments: CommentProps[] }) {
         <CommentItemBox>
           {comments.map((comment) => (
             <CommentItem
-              rid={comment.rid}
-              profile={comment.profile}
+              memberId={comment.memberId}
+              commentId={comment.commentId}
+              profile={IMG_URL + comment.profile}
               name={comment.name}
               content={comment.content}
             />

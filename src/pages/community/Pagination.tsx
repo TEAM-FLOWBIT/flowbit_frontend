@@ -11,26 +11,24 @@ const PaginationWrapper = styled.nav`
 `;
 
 interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
+  isFirstPage: boolean;
+  isLastPage: boolean;
   goToNextPage: () => void;
   goToPreviousPage: () => void;
 }
 
 export default function Pagination({
-  currentPage,
-  totalPages,
+  isFirstPage,
+  isLastPage,
   goToNextPage,
   goToPreviousPage,
 }: PaginationProps) {
-  const previousPageStyle =
-    currentPage === 1
-      ? { stroke: "#48519B", cursor: "default" }
-      : { stroke: "white", cursor: "pointer" };
-  const nextPageStyle =
-    currentPage === totalPages
-      ? { stroke: "#48519B", cursor: "default" }
-      : { stroke: "white", cursor: "pointer" };
+  const previousPageStyle = isFirstPage
+    ? { stroke: "#48519B", cursor: "default" }
+    : { stroke: "white", cursor: "pointer" };
+  const nextPageStyle = isLastPage
+    ? { stroke: "#48519B", cursor: "default" }
+    : { stroke: "white", cursor: "pointer" };
 
   return (
     <PaginationWrapper>
