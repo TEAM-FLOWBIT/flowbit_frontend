@@ -32,27 +32,18 @@ export function UseSignMutation() {
 
   const signUpMutaion = useMutation({
     mutationFn: (formData: FormData) => {
-      return fetch(
+      return axios.post(
         'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member',
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json();
-          } else if (response.status === 400) {
-            throw new Error('이메일 인증번호가 유효하지 않습니다.');
-          } else if (response.status === 409) {
-            throw new Error('이미 존재하는 아이디입니다.');
-          } else {
-            throw new Error('서버 에러입니다.');
-          }
-        })
-        .then(() => {
-          navigate('/login');
-        });
+        formData
+      );
+    },
+    onSuccess: () => {
+      alert('회원가입에 성공했습니다.');
+      navigate('/');
+    },
+    onError: (error) => {
+      alert('서버에 문제가 생겼습니다.');
+      console.log(error);
     },
   });
 

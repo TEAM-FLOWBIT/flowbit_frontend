@@ -66,13 +66,10 @@ export default function SignUp() {
   const {
     register: formRegister,
     handleSubmit: formSubmit,
-    watch,
     setError,
+    getValues,
     formState: { errors: formErrors, isValid: formIsValid, isDirty },
   } = useForm<FormValues>({ mode: 'onChange' });
-
-  const emailValue = watch('userId');
-  const randomNumberValue = watch('randomNumber');
 
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -96,15 +93,11 @@ export default function SignUp() {
     };
   }, [isCountingDown]);
 
-  const EmailMutation = useMutation({
-    mutationFn: (data: { email: string; emailPurpose: string }) => {
-      return axios.post(
-        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/mail',
-        JSON.stringify(data),
-        {
-          withCredentials: true,
-        }
-      );
+  const sendEmailCodeMutation = useMutation({
+    mutationFn: (formData: FormData) => {
+      return axios.post('/user-service/api/v1/mail', formData, {
+        headers: { 'Content-Type': 'application/json' },
+      });
     },
     onSuccess() {
       setIsLoading(false);
@@ -113,45 +106,35 @@ export default function SignUp() {
     },
     onError(error) {
       setIsLoading(false);
+      alert('인증메일 전송에 실패했습니다.');
       console.log(error);
     },
   });
 
+  // 이메일에 인증번호 전송 버튼
   const handleEmailSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!formErrors.userId) {
       setIsLoading(true);
-      const data = {
-        email: emailValue,
-        emailPurpose: 'SIGNUP',
-      };
-      EmailMutation.mutate(data);
+      const { userId } = getValues();
+      const formData = new FormData();
+      formData.append('email', userId);
+      formData.append('emailPurpose', 'SIGNUP');
+      sendEmailCodeMutation.mutate(formData);
     }
   };
 
   // 이메일 인증 요청 함수
   const verifyEmailMutation = useMutation({
-    mutationFn: (randomNumber: string) => {
-      return fetch(
-        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/mail/verify',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            email: emailValue,
-            randomNumber,
-            emailPurpose: 'SIGNUP',
-          }),
-        }
-      ).then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
+    mutationFn: (formData: FormData) => {
+      return axios.post('/user-service/api/v1/mail/verify', formData, {
+        headers: { 'Content-Type': 'application/json' },
       });
     },
     onSuccess() {
       setIsLoading(false);
       setIsVerified(true);
+      alert('인증되었습니다.');
     },
     onError(error) {
       setIsLoading(false);
@@ -159,14 +142,17 @@ export default function SignUp() {
     },
   });
 
-  // 인증번호 전송 버튼 클릭 핸들러
+  // 인증번호 검증 버튼 클릭 핸들러
   const handleRandomNumberSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!formErrors.randomNumber) {
       setIsLoading(true);
-      //verifyEmailMutation.mutate(randomNumberValue);
-      setIsVerified(true);
-      alert('인증 완료!');
+      const { userId, randomNumber } = getValues();
+      const formData = new FormData();
+      formData.append('email', userId);
+      formData.append('randomNumber', randomNumber);
+      formData.append('emailPurpose', 'SIGNUP');
+      verifyEmailMutation.mutate(formData);
     }
   };
 
