@@ -1,14 +1,14 @@
-import styled from "styled-components";
-import Input from "../../components/input/Input";
-import { useForm } from "react-hook-form";
-import { FormValues } from "../../components/input/types";
-import { Button, SizeButton } from "../../components/button/Button";
-import { Link } from "react-router-dom";
-import { UseSignMutation } from "../../hooks/services/mutations/sign";
-import { useEffect, useState } from "react";
-import Loading from "../../components/loading/Loading";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import styled from 'styled-components';
+import Input from '../../components/input/Input';
+import { useForm } from 'react-hook-form';
+import { FormValues } from '../../components/input/types';
+import { Button, SizeButton } from '../../components/button/Button';
+import { Link } from 'react-router-dom';
+import { UseSignMutation } from '../../hooks/services/mutations/signHook';
+import { useEffect, useState } from 'react';
+import Loading from '../../components/loading/Loading';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 const SignUpContainer = styled.div`
   margin: 9.6rem auto 11.7rem auto;
@@ -69,10 +69,10 @@ export default function SignUp() {
     watch,
     setError,
     formState: { errors: formErrors, isValid: formIsValid, isDirty },
-  } = useForm<FormValues>({ mode: "onChange" });
+  } = useForm<FormValues>({ mode: 'onChange' });
 
-  const emailValue = watch("userId");
-  const randomNumberValue = watch("randomNumber");
+  const emailValue = watch('userId');
+  const randomNumberValue = watch('randomNumber');
 
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
@@ -99,7 +99,7 @@ export default function SignUp() {
   const EmailMutation = useMutation({
     mutationFn: (data: { email: string; emailPurpose: string }) => {
       return axios.post(
-        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/mail",
+        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/mail',
         JSON.stringify(data),
         {
           withCredentials: true,
@@ -123,7 +123,7 @@ export default function SignUp() {
       setIsLoading(true);
       const data = {
         email: emailValue,
-        emailPurpose: "SIGNUP",
+        emailPurpose: 'SIGNUP',
       };
       EmailMutation.mutate(data);
     }
@@ -133,18 +133,18 @@ export default function SignUp() {
   const verifyEmailMutation = useMutation({
     mutationFn: (randomNumber: string) => {
       return fetch(
-        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/mail/verify",
+        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/mail/verify',
         {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify({
             email: emailValue,
             randomNumber,
-            emailPurpose: "SIGNUP",
+            emailPurpose: 'SIGNUP',
           }),
         }
       ).then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error('Network response was not ok');
         }
         return response.json();
       });
@@ -155,7 +155,7 @@ export default function SignUp() {
     },
     onError(error) {
       setIsLoading(false);
-      alert("오류가 발생했습니다: " + error.message);
+      alert('오류가 발생했습니다: ' + error.message);
     },
   });
 
@@ -166,7 +166,7 @@ export default function SignUp() {
       setIsLoading(true);
       //verifyEmailMutation.mutate(randomNumberValue);
       setIsVerified(true);
-      alert("인증 완료!");
+      alert('인증 완료!');
     }
   };
 
@@ -175,12 +175,12 @@ export default function SignUp() {
   const handleSignUp = (data: FormValues) => {
     let formData = new FormData();
 
-    formData.append("userId", data.userId);
-    formData.append("name", data.name);
-    formData.append("nickname", data.name);
-    formData.append("phone", data.phone);
-    formData.append("password", data.password);
-    data.profileFile[0] && formData.append("profileFile", data.profileFile[0]);
+    formData.append('userId', data.userId);
+    formData.append('name', data.name);
+    formData.append('nickname', data.name);
+    formData.append('phone', data.phone);
+    formData.append('password', data.password);
+    data.profileFile[0] && formData.append('profileFile', data.profileFile[0]);
     signUpMutaion.mutate(formData);
   };
 
@@ -196,10 +196,10 @@ export default function SignUp() {
               placeholder="이메일을 입력하세요"
               register={formRegister}
               rules={{
-                required: "이메일이 필요해요!",
+                required: '이메일이 필요해요!',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: "올바른 이메일 형식이 아닙니다.",
+                  message: '올바른 이메일 형식이 아닙니다.',
                 },
               }}
               errors={formErrors}
@@ -216,10 +216,10 @@ export default function SignUp() {
                 <Loading size="s" />
               ) : isCountingDown ? (
                 `${Math.floor(countdown / 60)}:${
-                  countdown % 60 < 10 ? "0" : ""
+                  countdown % 60 < 10 ? '0' : ''
                 }${countdown % 60}`
               ) : (
-                "번호 전송"
+                '번호 전송'
               )}
             </SizeButton>
           </InputBox>
@@ -231,7 +231,7 @@ export default function SignUp() {
                 placeholder="인증번호를 입력하세요"
                 register={formRegister}
                 rules={{
-                  required: "인증번호가 필요해요!",
+                  required: '인증번호가 필요해요!',
                 }}
                 errors={formErrors}
               />
@@ -257,7 +257,7 @@ export default function SignUp() {
             placeholder="비밀번호를 입력하세요"
             register={formRegister}
             rules={{
-              required: "비밀번호가 필요해요!",
+              required: '비밀번호가 필요해요!',
             }}
             errors={formErrors}
           />
@@ -267,7 +267,7 @@ export default function SignUp() {
             placeholder="이름을 입력하세요"
             register={formRegister}
             rules={{
-              required: "이름이 필요해요!",
+              required: '이름이 필요해요!',
             }}
             errors={formErrors}
           />
@@ -277,10 +277,10 @@ export default function SignUp() {
             placeholder="전화번호를 입력하세요"
             register={formRegister}
             rules={{
-              required: "전화번호가 필요해요!",
+              required: '전화번호가 필요해요!',
               pattern: {
                 value: /^\d{3}-\d{4}-\d{4}$/,
-                message: "올바른 전화번호 형식이 아닙니다.",
+                message: '올바른 전화번호 형식이 아닙니다.',
               },
             }}
             errors={formErrors}
