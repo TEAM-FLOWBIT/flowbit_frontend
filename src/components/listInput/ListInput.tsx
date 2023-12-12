@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import ListInputItem from "./ListInputItem";
-import { ListFormValues, ListInputProps } from "./types";
-import { UseFormSetError } from "react-hook-form";
+import styled from 'styled-components';
+import ListInputItem from './ListInputItem';
+import { ListFormValues, ListInputProps } from './types';
+import { UseFormSetError } from 'react-hook-form';
 
 const ListInputLayout = styled.div`
   border-radius: 1.5rem;
@@ -31,10 +31,10 @@ export default function ListInput({
         watch={watch}
         size="s"
         rules={{
-          required: "제목을 입력해주세요!",
+          required: '제목을 입력해주세요!',
           maxLength: {
             value: 40,
-            message: "제목은 40글자 이하 입력해주세요! ",
+            message: '제목은 40글자 이하 입력해주세요! ',
           },
         }}
       />
@@ -47,7 +47,7 @@ export default function ListInput({
         errors={errors}
         size="l"
         rules={{
-          required: "내용을 입력해주세요!",
+          required: '내용을 입력해주세요!',
         }}
       />
       <ListInputItem
@@ -63,7 +63,7 @@ export default function ListInput({
         images={images}
         setImages={setImages}
       />
-      <ListInputItem
+      {/* <ListInputItem
         withNumber={false}
         title="매수가"
         placeholder="매수가를 입력하시면 수익률을 계산해드려요"
@@ -75,10 +75,10 @@ export default function ListInput({
         rules={{
           pattern: {
             value: /^\d+$/,
-            message: "올바른 형태가 아닙니다",
+            message: '올바른 형태가 아닙니다',
           },
         }}
-      />
+      /> */}
     </ListInputLayout>
   );
 }
