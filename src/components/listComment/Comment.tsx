@@ -86,6 +86,10 @@ export default function Comment({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (member.auth === '') {
+      alert('로그인 후 이용해주세요.');
+      return;
+    }
     insertCommentMutation.mutate({
       auth: member.auth,
       formData: {
