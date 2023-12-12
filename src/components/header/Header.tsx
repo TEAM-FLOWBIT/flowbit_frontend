@@ -41,7 +41,6 @@ export default function Header() {
   const location = useLocation();
 
   const { member } = useMember();
-  console.log(member);
   const { logoutMutation } = useLogoutMutation();
 
   const isCurrentPath = (path: string) => location.pathname === path;

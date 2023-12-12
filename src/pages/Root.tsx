@@ -55,15 +55,15 @@ function Root() {
 
   const getMemberInfo = useCallback(useGetMemberInfo, []);
 
-  const { accessToken, memberInfo } = getMemberInfo();
+  const { accessToken, memberInfo, isSucess } = getMemberInfo();
 
   useEffect(() => {
-    console.log(window.document.cookie);
-    setMember({
-      auth: accessToken,
-      memberInfo,
-    });
-  }, [accessToken, memberInfo]);
+    isSucess &&
+      setMember({
+        auth: accessToken,
+        memberInfo,
+      });
+  }, [accessToken, memberInfo, isSucess]);
 
   return (
     <MemberContext.Provider value={{ member, setMember }}>
