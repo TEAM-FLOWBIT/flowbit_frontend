@@ -5,6 +5,7 @@ import Footer from '../components/footer/Footer';
 import Predict from './predict/Predict';
 import styled from 'styled-components';
 import { useGetMemberInfo } from '../hooks/services/queries/authHook';
+import { initialMemberInfo } from '../hooks/context/authHook';
 
 const RootLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -27,7 +28,7 @@ export const IMG_URL = 'https://likelionvideo.s3.ap-northeast-2.amazonaws.com/';
 
 interface IMemberContext {
   member: IMember;
-  setMember?: React.Dispatch<React.SetStateAction<IMember>>;
+  setMember: React.Dispatch<React.SetStateAction<IMember>>;
 }
 
 export const MemberContext = createContext<IMemberContext>({
@@ -42,20 +43,13 @@ export const MemberContext = createContext<IMemberContext>({
       profile: '',
     },
   },
+  setMember: function (value: React.SetStateAction<IMember>): void {
+    throw new Error('Function not implemented.');
+  },
 });
 
 function Root() {
-  const [member, setMember] = useState<IMember>({
-    memberInfo: {
-      id: 0,
-      name: '',
-      phone: '',
-      email: '',
-      nickname: '',
-      profile: '',
-    },
-    auth: '',
-  });
+  const [member, setMember] = useState<IMember>(initialMemberInfo);
 
   const outlet = useOutlet();
 
@@ -64,6 +58,7 @@ function Root() {
   const { accessToken, memberInfo } = getMemberInfo();
 
   useEffect(() => {
+    console.log(window.document.cookie);
     setMember({
       auth: accessToken,
       memberInfo,
