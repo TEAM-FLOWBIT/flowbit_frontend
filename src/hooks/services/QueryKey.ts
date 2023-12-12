@@ -3,4 +3,5 @@ export const QueryKey = {
   MEMBER: 'member',
   COMMUNITY: 'community',
   NEWS: 'news',
+  CHART: 'chart',
 };
