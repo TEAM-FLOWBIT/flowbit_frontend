@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 
 function LinkPreview({ url }: { url: string }) {
@@ -7,9 +8,7 @@ function LinkPreview({ url }: { url: string }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url, {
-          credentials: 'include',
-        });
+        const response = await fetch(url);
         const data = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(data, 'text/html');
