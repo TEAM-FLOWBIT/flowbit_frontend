@@ -41,6 +41,7 @@ export default function Header() {
   const location = useLocation();
 
   const { member } = useMember();
+  console.log(member);
   const { logoutMutation } = useLogoutMutation();
 
   const isCurrentPath = (path: string) => location.pathname === path;
@@ -72,7 +73,15 @@ export default function Header() {
           뉴스레터
         </HeaderLink>
         {member.auth !== '' ? (
-          <HeaderLink onClick={() => onClickLogoutBtn()}>로그아웃</HeaderLink>
+          <>
+            <HeaderLink onClick={() => onClickLogoutBtn()}>로그아웃</HeaderLink>
+            <HeaderLink
+              onClick={() => navigate('/mypage')}
+              style={{ fontWeight: isCurrentPath('/mypage') ? 700 : 400 }}
+            >
+              마이페이지
+            </HeaderLink>
+          </>
         ) : (
           <HeaderLink
             onClick={() => navigate('/login')}
