@@ -3,6 +3,7 @@ import Login from '../pages/login/Login';
 import SignUp from '../pages/signUp/signUp';
 import Community from '../pages/community/Community';
 import Root from '../pages/Root';
+import News from '../pages/news/News';
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> },
       { path: 'signUp', element: <SignUp /> },
       { path: 'community', element: <Community /> },
+      { path: 'news', element: <News /> },
     ],
   },
 ]);

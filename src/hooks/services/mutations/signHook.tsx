@@ -1,11 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { useMember } from '../../context/authHook';
 import axios from 'axios';
+import { QueryKey } from '../QueryKey';
 
 export function UseSignMutation() {
   const navigate = useNavigate();
-  const { setMember } = useMember();
+
+  const queryClient = useQueryClient();
 
   const signInMutation = useMutation({
     mutationFn: (formData: FormData) => {
@@ -17,11 +18,10 @@ export function UseSignMutation() {
         }
       );
     },
-    onSuccess(response: any) {
-      setMember &&
-        setMember((prev) => {
-          return { ...prev, auth: response.data.accessToken };
-        });
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.REFRESH],
+      });
       alert('로그인 성공');
       navigate('/');
     },

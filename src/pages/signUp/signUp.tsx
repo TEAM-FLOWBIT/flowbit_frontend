@@ -244,6 +244,12 @@ export default function SignUp() {
             register={formRegister}
             rules={{
               required: '비밀번호가 필요해요!',
+              pattern: {
+                value:
+                  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!\\s+$).{8,64}$/,
+                message:
+                  '비밀번호를 8~64글자의 영문+숫자+특수문자 조합으로 설정해주세요.',
+              },
             }}
             errors={formErrors}
           />

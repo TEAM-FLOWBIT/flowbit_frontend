@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { useNavigate, useLocation } from "react-router-dom";
+import styled from 'styled-components';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const HeaderLayout = styled.header`
   height: 9.2rem;
@@ -27,7 +27,7 @@ const HeaderMenu = styled.div`
 
 const HeaderLink = styled.span`
   color: #fff;
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 400;
   line-height: normal;
   text-decoration: none;
@@ -42,25 +42,31 @@ export default function Header() {
 
   return (
     <HeaderLayout>
-      <HeaderLogo onClick={() => navigate("/")}>FLOWBIT</HeaderLogo>
+      <HeaderLogo onClick={() => navigate('/')}>FLOWBIT</HeaderLogo>
       <HeaderMenu>
         <HeaderLink
-          onClick={() => navigate("/")}
-          style={{ fontWeight: isCurrentPath("/") ? 700 : 400 }}
+          onClick={() => navigate('/')}
+          style={{ fontWeight: isCurrentPath('/') ? 700 : 400 }}
         >
           비트코인 예측
         </HeaderLink>
         <HeaderLink
-          onClick={() => navigate("/community")}
-          style={{ fontWeight: isCurrentPath("/community") ? 700 : 400 }}
+          onClick={() => navigate('/community')}
+          style={{ fontWeight: isCurrentPath('/community') ? 700 : 400 }}
         >
           커뮤니티
         </HeaderLink>
         <HeaderLink
-          onClick={() => navigate("/login")}
+          onClick={() => navigate('/news')}
+          style={{ fontWeight: isCurrentPath('/news') ? 700 : 400 }}
+        >
+          뉴스레터
+        </HeaderLink>
+        <HeaderLink
+          onClick={() => navigate('/login')}
           style={{
             fontWeight:
-              isCurrentPath("/login") || isCurrentPath("/signUp") ? 700 : 400,
+              isCurrentPath('/login') || isCurrentPath('/signUp') ? 700 : 400,
           }}
         >
           회원가입/로그인

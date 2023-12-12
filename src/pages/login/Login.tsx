@@ -64,7 +64,7 @@ export default function Login() {
     register: formRegister,
     handleSubmit: formSubmit,
     formState: { errors: formErrors, isValid: formIsValid },
-  } = useForm<FormData>();
+  } = useForm<FormData>({ mode: 'onChange' });
 
   const { signInMutation } = UseSignMutation();
 
@@ -84,12 +84,16 @@ export default function Login() {
       <LoginForm id="loginForm" onSubmit={formSubmit(handleLogin)}>
         <LoginInputBox>
           <Input
-            title="아이디"
+            title="이메일"
             name="userId"
-            placeholder="아이디를 입력하세요"
+            placeholder="이메일를 입력하세요"
             register={formRegister}
             rules={{
-              required: '아이디가 필요해요!',
+              required: '이메일이 필요해요!',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: '올바른 이메일 형식이 아닙니다.',
+              },
             }}
             errors={formErrors}
           />
@@ -101,6 +105,12 @@ export default function Login() {
             register={formRegister}
             rules={{
               required: '비밀번호가 필요해요!',
+              pattern: {
+                value:
+                  /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!\\s+$).{8,64}$/,
+                message:
+                  '비밀번호를 8~64글자의 영문+숫자+특수문자 조합으로 설정해주세요.',
+              },
             }}
             errors={formErrors}
           />
