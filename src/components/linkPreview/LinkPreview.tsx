@@ -1,8 +1,9 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 
 function LinkPreview({ url }: { url: string }) {
   const [previewData, setPreviewData] = useState('');
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

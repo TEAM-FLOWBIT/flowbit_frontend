@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { QueryKey } from '../QueryKey';
 
 export function UseSignMutation() {
@@ -26,7 +26,18 @@ export function UseSignMutation() {
       navigate('/');
     },
     onError(error) {
-      console.log(error);
+      if (isAxiosError(error)) {
+        switch (error.response?.status) {
+          case 401:
+            alert('아이디 또는 비밀번호를 잘못 입력했습니다.');
+            break;
+          default:
+            alert('서버에 오류가 발생했습니다.');
+            break;
+        }
+      } else {
+        alert('예상치 못한 오류가 발생했습니다.');
+      }
     },
   });
 

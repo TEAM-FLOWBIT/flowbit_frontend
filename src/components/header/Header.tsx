@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useMember } from '../../hooks/context/authHook';
+import { useLogoutMutation } from '../../hooks/services/mutations/authHook';
 
 const HeaderLayout = styled.header`
   height: 9.2rem;
@@ -38,7 +40,14 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { member } = useMember();
+  const { logoutMutation } = useLogoutMutation();
+
   const isCurrentPath = (path: string) => location.pathname === path;
+
+  const onClickLogoutBtn = () => {
+    logoutMutation.mutate();
+  };
 
   return (
     <HeaderLayout>
@@ -62,15 +71,27 @@ export default function Header() {
         >
           뉴스레터
         </HeaderLink>
-        <HeaderLink
-          onClick={() => navigate('/login')}
-          style={{
-            fontWeight:
-              isCurrentPath('/login') || isCurrentPath('/signUp') ? 700 : 400,
-          }}
-        >
-          회원가입/로그인
-        </HeaderLink>
+        {member.auth !== '' ? (
+          <>
+            <HeaderLink onClick={() => onClickLogoutBtn()}>로그아웃</HeaderLink>
+            <HeaderLink
+              onClick={() => navigate('/mypage')}
+              style={{ fontWeight: isCurrentPath('/mypage') ? 700 : 400 }}
+            >
+              마이페이지
+            </HeaderLink>
+          </>
+        ) : (
+          <HeaderLink
+            onClick={() => navigate('/login')}
+            style={{
+              fontWeight:
+                isCurrentPath('/login') || isCurrentPath('/signUp') ? 700 : 400,
+            }}
+          >
+            회원가입/로그인
+          </HeaderLink>
+        )}
       </HeaderMenu>
     </HeaderLayout>
   );

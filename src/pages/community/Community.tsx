@@ -109,6 +109,10 @@ export default function Community() {
   });
 
   const handleRegister = (data: ListFormValues) => {
+    if (member.auth === '') {
+      alert('로그인를 먼저 진행해주세요.');
+      return;
+    }
     let formData = new FormData();
 
     const files = images.map((image) => image.file);
