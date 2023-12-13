@@ -147,8 +147,6 @@ export function useGetPredictDataQuery() {
     gcTime: 60000 * 60 * 2, // 2시간
   });
 
-  console.log(response);
-
   return response;
 }
 

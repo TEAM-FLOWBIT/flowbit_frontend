@@ -86,6 +86,26 @@ const RotatingCircle = styled.circle`
   animation: ${rotate} 10s linear infinite;
 `;
 
+const PredictLine = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: white;
+`;
+
+const PredictDesc = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > span {
+    color: #fff;
+    font-size: 2.4rem;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+  }
+`;
+
 export default function PredictMain() {
   const { data, isSuccess } = useGetPredictDataQuery();
 
@@ -96,6 +116,11 @@ export default function PredictMain() {
         <PredictMainTitle>
           <PredictSubTitle>유일한 비트코인 예측 서비스</PredictSubTitle>
           <span>FLOWBIT</span>
+          <PredictLine />
+          <PredictDesc>
+            <span>오늘 하루 방문자</span>
+            <span>000,000,000 명</span>
+          </PredictDesc>
         </PredictMainTitle>
         <PredictMainContent>
           <svg
