@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 import ProgressCircle from './ProgressCircle';
-import Chart, { ChartDataType } from '../../utils/Chart';
-import { useEffect, useState } from 'react';
+import Chart, { ChartType } from '../../utils/Chart';
+import { useEffect } from 'react';
+import {
+  useGetAnalysisDataQuery,
+  useGetChartDataQuery,
+} from '../../hooks/services/queries/chartHook';
 
 const PredictContentLayout = styled.div`
   padding: 18.4rem 0 19rem 0;
@@ -36,6 +40,7 @@ const PredictGraphBox = styled.article`
   border-radius: 1.5rem;
   border: 1px solid #48519b;
   background: rgba(37, 57, 88, 0.35);
+  overflow: hidden;
 `;
 
 const PredictContentContainer = styled.div`
@@ -51,11 +56,7 @@ const PredictContentBox = styled.div`
 `;
 
 const PredictResult = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2.1rem;
-  width: 51rem;
+  box-sizing: border-box;
   height: 23rem;
   max-height: 23rem;
   overflow-y: auto;
@@ -63,11 +64,6 @@ const PredictResult = styled.div`
   border-radius: 1.5rem;
   border: 1px solid #48519b;
   background: rgba(37, 57, 88, 0.35);
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: normal;
-  box-sizing: border-box;
   &::-webkit-scrollbar {
     width: 0.6rem;
     background: transparent;
@@ -80,16 +76,27 @@ const PredictResult = styled.div`
   }
 `;
 
-const PredictResultData = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1.6rem;
-`;
+const PredictText = styled.pre`
+  white-space: pre-wrap;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: normal;
+  height: 23rem;
+  max-height: 23rem;
+  width: 51rem;
+  overflow-y: auto;
 
-const DateValuePairGroup = styled.div`
-  display: flex;
-  flex-direction: column;
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    border: 0.1rem solid #48519b;
+    background: linear-gradient(93deg, #fa00ff, #0085ff);
+  }
 `;
 
 const PredictBTC = styled.div`
@@ -156,49 +163,30 @@ const PredictBTCText = styled.p`
   }
 `;
 
-const setChart = (chartDatas: ChartDataType[]) => {
-  const chart = new Chart({
-    targetId: 'flowbitChart',
-    size: {
-      width: 1500,
-      height: 790,
-      font: 15,
-    },
-    datas: chartDatas,
-    labels: [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '11',
-      '12',
-      '13',
-      '14',
-    ],
-  });
+const setChart = (chartData: ChartType) => {
+  const chart = new Chart(chartData);
 
   chart.render();
 };
 
 export default function PredictContent({
-  chartDatas,
+  predictData,
+  actualData,
 }: {
-  chartDatas: ChartDataType[];
+  predictData: string;
+  actualData: string;
 }) {
-  const [isFirst, setIsFirst] = useState<boolean>(true);
+  // 차트 데이터 가지고 오기
+  const getChartDataResponse = useGetChartDataQuery();
+
+  // 분석 결과 가지고 오기
+  const getAnalysisDataResposne = useGetAnalysisDataQuery();
 
   useEffect(() => {
-    if (isFirst) {
-      setChart(chartDatas);
-      setIsFirst(false);
+    if (getChartDataResponse.isSuccess) {
+      setChart(getChartDataResponse.data);
     }
-  }, [chartDatas, isFirst]);
+  }, [getChartDataResponse.isSuccess, getChartDataResponse.data]);
 
   return (
     <PredictContentLayout>
@@ -213,7 +201,13 @@ export default function PredictContent({
           <PredictContentBox>
             <PredictContentTitle>Chat gpt의 분석결과</PredictContentTitle>
             <PredictResult>
-              <p>예측률을 계산해보겠습니다</p>
+              {/* {getAnalysisDataResposne.data} */}
+              <PredictText>
+                {getAnalysisDataResposne.isSuccess
+                  ? getAnalysisDataResposne.data.gpt_response
+                  : null}
+              </PredictText>
+              {/* <p>예측률을 계산해보겠습니다</p>
               <PredictResultData>
                 <DateValuePairGroup>
                   <p>| 2014-01-12 | 3.15% |</p>
@@ -233,7 +227,7 @@ export default function PredictContent({
               <span>
                 예측률은 각 날짜별로 계산되며, 0%에 가까울수록 예측이 정확하다
                 는 의미입니다. 더 높은 예측률은 더 부정확한 예측을 나타냅니다
-              </span>
+              </span> */}
             </PredictResult>
           </PredictContentBox>
           <PredictContentBox>
@@ -246,10 +240,10 @@ export default function PredictContent({
                 </PredictBTCGraph>
                 <PredictBTCValue>
                   <PredictBTCTextBig>
-                    <span>37,900,000 </span>&nbsp;KRW
+                    <span>{predictData} </span>&nbsp;KRW
                   </PredictBTCTextBig>
                   <PredictBTCText>
-                    오늘의 BTC&nbsp;<span>37,900,000 </span>&nbsp;KRW
+                    오늘의 BTC&nbsp;<span>{actualData} </span>&nbsp;KRW
                   </PredictBTCText>
                 </PredictBTCValue>
               </PredictBTCGraphBox>

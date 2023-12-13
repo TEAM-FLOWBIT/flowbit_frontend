@@ -6,6 +6,7 @@ import Predict from './predict/Predict';
 import styled from 'styled-components';
 import { useGetMemberInfo } from '../hooks/services/queries/authHook';
 import { initialMemberInfo } from '../hooks/context/authHook';
+// import { InitializeGoogleAnalytics } from '../hooks/services/google/analytices';
 
 const RootLayout = styled.div`
   background: linear-gradient(180deg, #040108 0%, #250061 100%);
@@ -56,6 +57,11 @@ function Root() {
   const getMemberInfo = useCallback(useGetMemberInfo, []);
 
   const { accessToken, memberInfo, isSucess } = getMemberInfo();
+
+  // TODO Google Analytics 연동
+  // useEffect(() => {
+  //   InitializeGoogleAnalytics();
+  // }, []);
 
   useEffect(() => {
     isSucess &&

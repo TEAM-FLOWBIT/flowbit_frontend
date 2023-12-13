@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes } from 'styled-components';
 
 const PredictMainBanner = styled.div`
   display: flex;
@@ -85,7 +85,35 @@ const RotatingCircle = styled.circle`
   animation: ${rotate} 10s linear infinite;
 `;
 
-export default function PredictMain() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const PredictLine = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: white;
+`;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const PredictDesc = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > span {
+    color: #fff;
+    font-size: 2.4rem;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+  }
+`;
+
+export default function PredictMain({
+  predictKRW,
+  predictUSD,
+}: {
+  predictKRW: string;
+  predictUSD: string;
+}) {
   return (
     <PredictMainBanner>
       <PredictGradationTop />
@@ -93,6 +121,11 @@ export default function PredictMain() {
         <PredictMainTitle>
           <PredictSubTitle>유일한 비트코인 예측 서비스</PredictSubTitle>
           <span>FLOWBIT</span>
+          {/* <PredictLine />
+          <PredictDesc>
+            <span>오늘 하루 방문자</span>
+            <span>000,000,000 명</span>
+          </PredictDesc> */}
         </PredictMainTitle>
         <PredictMainContent>
           <svg
@@ -100,7 +133,7 @@ export default function PredictMain() {
             height="100%"
             viewBox="0 0 538 538"
             fill="none"
-            style={{ overflow: "visible" }}
+            style={{ overflow: 'visible' }}
           >
             <RotatingPath
               d="M357.642 20.3076C358.981 17.9888 357.897 15.0216 355.361 14.1625C328.254 4.97951 299.209 0 269 0C120.435 0 0 120.435 0 269C0 417.565 120.435 538 269 538C417.565 538 538 417.565 538 269C538 205.422 515.943 146.995 479.064 100.954C477.194 98.619 473.579 98.9339 472.083 101.525C471.186 103.078 471.347 105.022 472.467 106.422C508.116 150.979 529.433 207.5 529.433 269C529.433 412.833 412.833 529.433 269 529.433C125.167 529.433 8.56688 412.833 8.56688 269C8.56688 125.167 125.167 8.56688 269 8.56688C298.198 8.56688 326.274 13.3718 352.479 22.2339C354.441 22.8973 356.607 22.101 357.642 20.3076Z"
@@ -116,7 +149,7 @@ export default function PredictMain() {
               text-anchor="middle"
               alignment-baseline="middle"
             >
-              내일의 비트코인{" "}
+              내일의 비트코인{' '}
               <tspan dy="0.25em" fontWeight="600">
                 예측가격
               </tspan>
@@ -130,7 +163,10 @@ export default function PredictMain() {
               text-anchor="middle"
               alignment-baseline="middle"
             >
-              37,900,000 KRW
+              {/* {Math.floor(predictKRW)
+                .toString()
+                .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')} */}
+              {predictKRW + ' '} KRW
             </text>
             <text
               x="50%"
@@ -141,7 +177,7 @@ export default function PredictMain() {
               text-anchor="middle"
               alignment-baseline="middle"
             >
-              28,191.96 USD
+              {predictUSD} USD
             </text>
             <defs>
               <linearGradient

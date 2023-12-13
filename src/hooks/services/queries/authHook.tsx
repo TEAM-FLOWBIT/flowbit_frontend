@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { QueryKey } from '../QueryKey';
 import axios from 'axios';
-import { initialMemberInfo } from '../../context/authHook';
 
 export const useGetAccessTokenByRefresh = () => {
   // TODO Error 처리 및 옵션 재설정

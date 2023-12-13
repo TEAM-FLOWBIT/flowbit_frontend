@@ -77,16 +77,15 @@ export default function CommentItem({ ...props }: CommentProps) {
       <CommentItemContainer>
         <CommentItemLabel>
           <CommentItemName>{props.name}</CommentItemName>
-          {member?.memberInfo?.id &&
-            props.memberId === member.memberInfo.id && (
-              <CommentDeleteBtn
-                onClick={() => {
-                  onClickDeleteBtn(props.commentId);
-                }}
-              >
-                삭제하기
-              </CommentDeleteBtn>
-            )}
+          {member?.memberInfo?.id && props.memberId === member.memberInfo.id ? (
+            <CommentDeleteBtn
+              onClick={() => {
+                onClickDeleteBtn(props.commentId);
+              }}
+            >
+              삭제하기
+            </CommentDeleteBtn>
+          ) : null}
         </CommentItemLabel>
         <CommentItemContent>{props.content}</CommentItemContent>
       </CommentItemContainer>
