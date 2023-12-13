@@ -26,6 +26,12 @@ module.exports = function (app) {
   //   })
   // );
   app.use(
+    createProxyMiddleware('/bitcoin-service', {
+      target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
+      changeOrigin: true,
+    })
+  );
+  app.use(
     createProxyMiddleware('/user-service', {
       target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
       changeOrigin: true,

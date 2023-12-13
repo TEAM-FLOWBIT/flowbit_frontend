@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import ProgressCircle from './ProgressCircle';
-import Chart, { ChartDataType, ChartType } from '../../utils/Chart';
-import { useEffect, useState } from 'react';
+import Chart, { ChartType } from '../../utils/Chart';
+import { useEffect } from 'react';
 import {
-  IChartDataResponse,
-  chartDataParser,
+  useGetAnalysisDataQuery,
+  useGetChartDataQuery,
 } from '../../hooks/services/queries/chartHook';
 
 const PredictContentLayout = styled.div`
@@ -40,6 +40,7 @@ const PredictGraphBox = styled.article`
   border-radius: 1.5rem;
   border: 1px solid #48519b;
   background: rgba(37, 57, 88, 0.35);
+  overflow: hidden;
 `;
 
 const PredictContentContainer = styled.div`
@@ -55,11 +56,7 @@ const PredictContentBox = styled.div`
 `;
 
 const PredictResult = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2.1rem;
-  width: 51rem;
+  box-sizing: border-box;
   height: 23rem;
   max-height: 23rem;
   overflow-y: auto;
@@ -67,11 +64,6 @@ const PredictResult = styled.div`
   border-radius: 1.5rem;
   border: 1px solid #48519b;
   background: rgba(37, 57, 88, 0.35);
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: normal;
-  box-sizing: border-box;
   &::-webkit-scrollbar {
     width: 0.6rem;
     background: transparent;
@@ -84,16 +76,27 @@ const PredictResult = styled.div`
   }
 `;
 
-const PredictResultData = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1.6rem;
-`;
+const PredictText = styled.pre`
+  white-space: pre-wrap;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: normal;
+  height: 23rem;
+  max-height: 23rem;
+  width: 51rem;
+  overflow-y: auto;
 
-const DateValuePairGroup = styled.div`
-  display: flex;
-  flex-direction: column;
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    border: 0.1rem solid #48519b;
+    background: linear-gradient(93deg, #fa00ff, #0085ff);
+  }
 `;
 
 const PredictBTC = styled.div`
@@ -166,64 +169,18 @@ const setChart = (chartData: ChartType) => {
   chart.render();
 };
 
-export default function PredictContent({
-  chartDatas,
-}: {
-  chartDatas: ChartDataType[];
-}) {
-  const [isFirst, setIsFirst] = useState<boolean>(true);
+export default function PredictContent() {
+  // 차트 데이터 가지고 오기
+  const getChartDataResponse = useGetChartDataQuery();
+
+  // 분석 결과 가지고 오기
+  const getAnalysisDataResposne = useGetAnalysisDataQuery();
 
   useEffect(() => {
-    if (isFirst) {
-      const testData: IChartDataResponse = {
-        datas: [
-          {
-            datas: [
-              49576000, 49075000, 48238000, 49212000, 48683000, 49128000,
-              48992000, 49788000, 49218000, 49025000, 49779000, 50595000,
-              50429000, 50021000, 49536000, 50064000, 50692000, 50479000,
-              51383000, 51755000, 53087000, 56354000, 57666000, 60630000,
-              59464000, 59884000, 60102000, 59892000, 57392000, 56939000,
-            ],
-            label: '실제 BTC',
-          },
-          {
-            datas: [
-              49302412.0, 49465652.0, 48999032.0, 48144672.0, 49256452.0,
-              48782848.0, 49157744.0, 49030872.0, 49830016.0, 49196528.0,
-              48943784.0, 49777376.0, 50630756.0, 50456228.0, 49921932.0,
-              49423996.0, 50072140.0, 50767156.0, 50486940.0, 51387336.0,
-              51794688.0, 53107272.0, 56234128.0, 57903556.0, 60789600.0,
-              59547000.0, 59491428.0, 59781540.0, 59603888.0, 56965148.0,
-              56722248.0,
-            ],
-            label: '예측 BTC',
-          },
-        ],
-        label: [
-          '11-15',
-          '11-17',
-          '11-19',
-          '11-21',
-          '11-23',
-          '11-25',
-          '11-27',
-          '11-29',
-          '12-01',
-          '12-03',
-          '12-05',
-          '12-07',
-          '12-09',
-          '12-11',
-          '12-13',
-        ],
-        max: 64420742.4,
-        min: 44513529.6,
-      };
-      setChart(chartDataParser(testData));
-      setIsFirst(false);
+    if (getChartDataResponse.isSuccess) {
+      setChart(getChartDataResponse.data);
     }
-  }, [chartDatas, isFirst]);
+  }, [getChartDataResponse.isSuccess, getChartDataResponse.data]);
 
   return (
     <PredictContentLayout>
@@ -238,7 +195,13 @@ export default function PredictContent({
           <PredictContentBox>
             <PredictContentTitle>Chat gpt의 분석결과</PredictContentTitle>
             <PredictResult>
-              <p>예측률을 계산해보겠습니다</p>
+              {/* {getAnalysisDataResposne.data} */}
+              <PredictText>
+                {getAnalysisDataResposne.isSuccess
+                  ? getAnalysisDataResposne.data.gpt_response
+                  : null}
+              </PredictText>
+              {/* <p>예측률을 계산해보겠습니다</p>
               <PredictResultData>
                 <DateValuePairGroup>
                   <p>| 2014-01-12 | 3.15% |</p>
@@ -258,7 +221,7 @@ export default function PredictContent({
               <span>
                 예측률은 각 날짜별로 계산되며, 0%에 가까울수록 예측이 정확하다
                 는 의미입니다. 더 높은 예측률은 더 부정확한 예측을 나타냅니다
-              </span>
+              </span> */}
             </PredictResult>
           </PredictContentBox>
           <PredictContentBox>
