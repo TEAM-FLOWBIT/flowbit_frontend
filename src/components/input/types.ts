@@ -16,12 +16,19 @@ export interface InputProps {
   type?: string;
   accept?: string;
   setError?: UseFormSetError<FormValues>;
+  initialProfileImage?: string;
 }
 
 export interface FormValues {
   userId: string;
   randomNumber: string;
   password: string;
+  name: string;
+  phone: string;
+  profileFile: FileList;
+}
+
+export interface MyPageFormValues {
   name: string;
   phone: string;
   profileFile: FileList;
