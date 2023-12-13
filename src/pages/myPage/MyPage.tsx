@@ -3,10 +3,10 @@ import Input from "../../components/input/Input";
 import { useForm } from "react-hook-form";
 import { MyPageFormValues } from "../../components/input/types";
 import { Button } from "../../components/button/Button";
-import { useContext, useEffect } from "react";
-import { useGetMemberInfo } from "../../hooks/services/queries/authHook";
-import { userInfo } from "os";
-import { MemberContext } from "../Root";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QueryKey } from "../../hooks/services/QueryKey";
+import axios from "axios";
+import { useMember } from "../../hooks/context/authHook";
 
 const MyPageContainer = styled.div`
   margin: 9.6rem auto 14rem auto;
@@ -48,12 +48,14 @@ const MyPageSignOut = styled.div`
 `;
 
 export default function MyPage() {
-  const { member } = useContext(MemberContext);
+  const { member } = useMember();
+  const queryClient = useQueryClient();
 
   const {
     register: formRegister,
     handleSubmit: formSubmit,
     setError,
+    getValues,
     formState: { errors: formErrors, isValid: formIsValid, isDirty },
   } = useForm<MyPageFormValues>({
     mode: "onChange",
@@ -63,12 +65,62 @@ export default function MyPage() {
     },
   });
 
+  const modifyUserMutation = useMutation({
+    mutationFn: (formData: FormData) => {
+      return axios.put(
+        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member",
+        formData
+      );
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.MEMBER],
+      });
+      alert("회원정보 수정이 완료되었습니다.");
+    },
+    onError(error) {
+      console.log(error);
+      alert("예상치 못한 오류가 발생했습니다.");
+    },
+  });
+
   const handleUserInfo = (data: MyPageFormValues) => {
     console.log(JSON.stringify(data));
+    let formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("phone", data.phone);
+    formData.append("password", data.password);
+    formData.append("memberId", member.memberInfo.id.toString());
+    data.profileFile[0] && formData.append("profileFile", data.profileFile[0]);
+
+    modifyUserMutation.mutate(formData);
   };
 
+  const deleteUserMutation = useMutation({
+    mutationFn: (password: object) => {
+      return axios.delete(
+        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member/login",
+        {
+          data: { password: password },
+        }
+      );
+    },
+    onSuccess() {
+      alert("탈퇴 완료");
+    },
+    onError(error) {
+      console.log(error);
+      alert("예상치 못한 오류가 발생했습니다.");
+    },
+  });
+
   const handleSignOut = () => {
-    alert("탈퇴하기");
+    const { password } = getValues();
+    if (!password) {
+      alert("비밀번호를 입력해주세요.");
+      return;
+    }
+    deleteUserMutation.mutate({ password });
   };
 
   return (
@@ -83,6 +135,23 @@ export default function MyPage() {
                 name="name"
                 placeholder="이름을 입력하세요"
                 register={formRegister}
+                errors={formErrors}
+              />
+              <Input
+                title="비밀번호"
+                name="password"
+                type="password"
+                placeholder="비밀번호를 입력하세요"
+                register={formRegister}
+                rules={{
+                  required: "비밀번호가 필요해요!",
+                  pattern: {
+                    value:
+                      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!\\s+$).{8,64}$/,
+                    message:
+                      "비밀번호를 8~64글자의 영문+숫자+특수문자 조합으로 설정해주세요.",
+                  },
+                }}
                 errors={formErrors}
               />
               <Input

@@ -32,4 +32,5 @@ export interface MyPageFormValues {
   name: string;
   phone: string;
   profileFile: FileList;
+  password: string;
 }
