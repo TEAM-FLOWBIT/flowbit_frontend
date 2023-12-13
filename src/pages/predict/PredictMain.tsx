@@ -166,8 +166,7 @@ export default function PredictMain({
               {/* {Math.floor(predictKRW)
                 .toString()
                 .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')} */}
-              {predictKRW}
-              KRW
+              {predictKRW + ' '} KRW
             </text>
             <text
               x="50%"
