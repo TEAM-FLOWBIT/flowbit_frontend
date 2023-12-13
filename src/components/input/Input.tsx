@@ -4,6 +4,7 @@ import { ReactComponent as ErrorIcon } from "../../assets/ErrorIcon.svg";
 import { BaseInputProps } from "../listInput/types";
 import { useState } from "react";
 import { ReactComponent as ImageBox } from "../../assets/ImageBoxL.svg";
+import { IMG_URL } from "../../pages/Root";
 
 const InputLayout = styled.div`
   display: flex;
@@ -81,10 +82,16 @@ export default function Input({
   type = "text",
   accept,
   setError,
+  initialProfileImage,
 }: InputProps) {
+  const profileURL =
+    initialProfileImage !== "flowbit-default-profile.png"
+      ? IMG_URL + initialProfileImage
+      : null;
+
   const error = errors[name];
 
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(profileURL || null);
 
   const ref = register(name, rules);
 
