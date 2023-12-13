@@ -1,5 +1,4 @@
 import styled, { keyframes } from 'styled-components';
-import { useGetPredictDataQuery } from '../../hooks/services/queries/chartHook';
 
 const PredictMainBanner = styled.div`
   display: flex;
@@ -86,12 +85,14 @@ const RotatingCircle = styled.circle`
   animation: ${rotate} 10s linear infinite;
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PredictLine = styled.div`
   width: 100%;
   height: 1px;
   background-color: white;
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PredictDesc = styled.div`
   display: flex;
   justify-content: space-between;
@@ -106,9 +107,13 @@ const PredictDesc = styled.div`
   }
 `;
 
-export default function PredictMain() {
-  const { data, isSuccess } = useGetPredictDataQuery();
-
+export default function PredictMain({
+  predictKRW,
+  predictUSD,
+}: {
+  predictKRW: string;
+  predictUSD: string;
+}) {
   return (
     <PredictMainBanner>
       <PredictGradationTop />
@@ -116,11 +121,11 @@ export default function PredictMain() {
         <PredictMainTitle>
           <PredictSubTitle>유일한 비트코인 예측 서비스</PredictSubTitle>
           <span>FLOWBIT</span>
-          <PredictLine />
+          {/* <PredictLine />
           <PredictDesc>
             <span>오늘 하루 방문자</span>
             <span>000,000,000 명</span>
-          </PredictDesc>
+          </PredictDesc> */}
         </PredictMainTitle>
         <PredictMainContent>
           <svg
@@ -158,11 +163,10 @@ export default function PredictMain() {
               text-anchor="middle"
               alignment-baseline="middle"
             >
-              {isSuccess
-                ? Math.floor(data.predicted_price)
-                    .toString()
-                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-                : '0000,0000'}{' '}
+              {/* {Math.floor(predictKRW)
+                .toString()
+                .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')} */}
+              {predictKRW}
               KRW
             </text>
             <text
@@ -174,7 +178,7 @@ export default function PredictMain() {
               text-anchor="middle"
               alignment-baseline="middle"
             >
-              28,191.96 USD
+              {predictUSD} USD
             </text>
             <defs>
               <linearGradient

@@ -169,7 +169,13 @@ const setChart = (chartData: ChartType) => {
   chart.render();
 };
 
-export default function PredictContent() {
+export default function PredictContent({
+  predictData,
+  actualData,
+}: {
+  predictData: string;
+  actualData: string;
+}) {
   // 차트 데이터 가지고 오기
   const getChartDataResponse = useGetChartDataQuery();
 
@@ -234,10 +240,10 @@ export default function PredictContent() {
                 </PredictBTCGraph>
                 <PredictBTCValue>
                   <PredictBTCTextBig>
-                    <span>37,900,000 </span>&nbsp;KRW
+                    <span>{predictData} </span>&nbsp;KRW
                   </PredictBTCTextBig>
                   <PredictBTCText>
-                    오늘의 BTC&nbsp;<span>37,900,000 </span>&nbsp;KRW
+                    오늘의 BTC&nbsp;<span>{actualData} </span>&nbsp;KRW
                   </PredictBTCText>
                 </PredictBTCValue>
               </PredictBTCGraphBox>

@@ -134,6 +134,12 @@ export function useGetChartDataQuery() {
   return response;
 }
 
+function numberParserToString(data: number) {
+  return Math.floor(data)
+    .toString()
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+}
+
 export function useGetPredictDataQuery() {
   const response = useQuery({
     queryKey: [QueryKey.PREDICT],
@@ -141,7 +147,16 @@ export function useGetPredictDataQuery() {
       return axios.get('/bitcoin-service/get_predict_value');
     },
     select(data) {
-      return data.data;
+      console.log(data.data);
+      return {
+        predictKRW: numberParserToString(
+          data.data.predicted_data.predicted_krw
+        ),
+        predictUSD: numberParserToString(
+          data.data.predicted_data.predicted_usd
+        ),
+        actureKRW: numberParserToString(data.data.actual_data.close_price),
+      };
     },
     staleTime: 60000 * 60 * 2, // 2시간
     gcTime: 60000 * 60 * 2, // 2시간
