@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import ProgressCircle from './ProgressCircle';
 import Chart, { ChartType } from '../../utils/Chart';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
-  chartDataParser,
   useGetAnalysisDataQuery,
   useGetChartDataQuery,
 } from '../../hooks/services/queries/chartHook';
