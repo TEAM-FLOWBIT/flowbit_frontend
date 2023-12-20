@@ -6,6 +6,7 @@ import Root from '../pages/Root';
 import News from '../pages/news/News';
 import MyPage from '../pages/myPage/MyPage';
 import Customer from '../pages/info/Customer';
+import Terms from '../pages/info/Terms';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: 'news', element: <News /> },
       { path: 'myPage', element: <MyPage /> },
       { path: 'info-customer', element: <Customer /> },
+      { path: 'info-terms', element: <Terms /> },
     ],
   },
 ]);
