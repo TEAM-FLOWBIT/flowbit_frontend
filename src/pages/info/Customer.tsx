@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 const InfoLayout = styled.div`
@@ -16,6 +17,10 @@ const InfoLayout = styled.div`
 `;
 
 function Customer() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
   return (
     <>
       <InfoLayout>
