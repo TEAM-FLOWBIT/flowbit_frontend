@@ -117,6 +117,7 @@ export default function List({ ...props }: ListProps) {
   const profileURL = props.profile
     ? IMG_URL + props.profile
     : IMG_URL + 'flowbit-default-profile.png';
+
   const imagePathURLs = props.imagePath
     ? props.imagePath.map((path) => IMG_URL + path)
     : [];
