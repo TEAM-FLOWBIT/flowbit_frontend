@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const FooterLayout = styled.footer`
@@ -8,12 +9,22 @@ const FooterLayout = styled.footer`
 const FooterMenu = styled.div`
   display: flex;
   width: 100%;
-  justify-content: flex-end;
-  gap: 7.7rem;
+  justify-content: space-between;
   color: #5058a9;
   font-size: 1.5rem;
   font-weight: 400;
   line-height: normal;
+
+  & > div {
+    display: flex;
+    gap: 7.7rem;
+  }
+
+  & a {
+    font-weight: bold;
+    text-decoration: none;
+    color: #5058a9;
+  }
 `;
 
 const FooterContent = styled.div`
@@ -47,9 +58,19 @@ export default function Footer() {
   return (
     <FooterLayout>
       <FooterMenu>
-        <span>대표 FLOWBIT</span>
-        <span>제작 FLOWBIT</span>
-        <span>채널톡 copyright 2023 FLOW-BIT</span>
+        <div>
+          <span>대표 FLOWBIT</span>
+          <span>제작 FLOWBIT</span>
+          <span>채널톡 copyright 2023 FLOW-BIT</span>
+        </div>
+        <div>
+          <span>
+            <Link to={'/info-customer'}>개인정보 처리방침</Link>
+          </span>
+          <span>
+            <Link to={'info-terms'}>서비스 이용 약관</Link>
+          </span>
+        </div>
       </FooterMenu>
       <FooterContent>
         <FooterTitle>FLOWBIT 법적 고지</FooterTitle>
