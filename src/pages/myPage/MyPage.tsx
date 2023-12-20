@@ -1,12 +1,13 @@
-import styled from "styled-components";
-import Input from "../../components/input/Input";
-import { useForm } from "react-hook-form";
-import { MyPageFormValues } from "../../components/input/types";
-import { Button } from "../../components/button/Button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { QueryKey } from "../../hooks/services/QueryKey";
-import axios from "axios";
-import { useMember } from "../../hooks/context/authHook";
+import styled from 'styled-components';
+import Input from '../../components/input/Input';
+import { useForm } from 'react-hook-form';
+import { MyPageFormValues } from '../../components/input/types';
+import { Button } from '../../components/button/Button';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QueryKey } from '../../hooks/services/QueryKey';
+import axios from 'axios';
+import { useMember } from '../../hooks/context/authHook';
+import { useNavigate } from 'react-router';
 
 const MyPageContainer = styled.div`
   margin: 9.6rem auto 14rem auto;
@@ -50,6 +51,7 @@ const MyPageSignOut = styled.div`
 export default function MyPage() {
   const { member } = useMember();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const {
     register: formRegister,
@@ -58,7 +60,7 @@ export default function MyPage() {
     getValues,
     formState: { errors: formErrors, isValid: formIsValid, isDirty },
   } = useForm<MyPageFormValues>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
       name: member.memberInfo?.name,
       phone: member.memberInfo?.phone,
@@ -67,60 +69,61 @@ export default function MyPage() {
 
   const modifyUserMutation = useMutation({
     mutationFn: (formData: FormData) => {
-      return axios.put(
-        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member",
-        formData
-      );
+      return axios.post('/user-service/api/v1/member', formData, {
+        headers: {
+          Authorization: `Bearer ${member.auth}`,
+        },
+      });
     },
     onSuccess() {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.MEMBER],
       });
-      alert("회원정보 수정이 완료되었습니다.");
+      alert('회원정보 수정이 완료되었습니다.');
     },
     onError(error) {
       console.log(error);
-      alert("예상치 못한 오류가 발생했습니다.");
+      alert('예상치 못한 오류가 발생했습니다.');
     },
   });
 
   const handleUserInfo = (data: MyPageFormValues) => {
-    console.log(JSON.stringify(data));
     let formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("phone", data.phone);
-    formData.append("password", data.password);
-    formData.append("memberId", member.memberInfo.id.toString());
-    data.profileFile[0] && formData.append("profileFile", data.profileFile[0]);
+    formData.append('name', data.name);
+    formData.append('phoneNumber', data.phone);
+    formData.append('password', data.password);
+    // formData.append('memberId', member.memberInfo.id.toString());
+    data.profileFile[0] && formData.append('profileFile', data.profileFile[0]);
 
     modifyUserMutation.mutate(formData);
   };
 
   const deleteUserMutation = useMutation({
-    mutationFn: (password: object) => {
-      return axios.delete(
-        "https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member/login",
-        {
-          data: { password: password },
-        }
-      );
+    mutationFn: (password: string) => {
+      return axios.delete('/user-service/api/v1/member', {
+        data: { password: password },
+        headers: {
+          Authorization: `Bearer ${member.auth}`,
+        },
+      });
     },
     onSuccess() {
-      alert("탈퇴 완료");
+      alert('탈퇴 완료');
+      navigate('/');
     },
     onError(error) {
       console.log(error);
-      alert("예상치 못한 오류가 발생했습니다.");
+      alert('예상치 못한 오류가 발생했습니다.');
     },
   });
 
   const handleSignOut = () => {
     const { password } = getValues();
     if (!password) {
-      alert("비밀번호를 입력해주세요.");
+      alert('비밀번호를 입력해주세요.');
       return;
     }
-    deleteUserMutation.mutate({ password });
+    deleteUserMutation.mutate(password);
   };
 
   return (
@@ -144,12 +147,12 @@ export default function MyPage() {
                 placeholder="비밀번호를 입력하세요"
                 register={formRegister}
                 rules={{
-                  required: "비밀번호가 필요해요!",
+                  required: '비밀번호가 필요해요!',
                   pattern: {
                     value:
                       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!\\s+$).{8,64}$/,
                     message:
-                      "비밀번호를 8~64글자의 영문+숫자+특수문자 조합으로 설정해주세요.",
+                      '비밀번호를 8~64글자의 영문+숫자+특수문자 조합으로 설정해주세요.',
                   },
                 }}
                 errors={formErrors}
@@ -162,7 +165,7 @@ export default function MyPage() {
                 rules={{
                   pattern: {
                     value: /^\d{3}-\d{4}-\d{4}$/,
-                    message: "올바른 전화번호 형식이 아닙니다.",
+                    message: '올바른 전화번호 형식이 아닙니다.',
                   },
                 }}
                 errors={formErrors}
@@ -179,7 +182,7 @@ export default function MyPage() {
                 initialProfileImage={
                   member.memberInfo
                     ? member.memberInfo.profile
-                    : "flowbit-default-profile.png"
+                    : 'flowbit-default-profile.png'
                 }
               />
             </>
