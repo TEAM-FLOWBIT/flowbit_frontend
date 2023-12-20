@@ -7,12 +7,9 @@ export const useGetAccessTokenByRefresh = () => {
   const { data, isError, isSuccess } = useQuery({
     queryKey: [QueryKey.REFRESH],
     queryFn: () => {
-      return axios.get(
-        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member/renew-access-token',
-        {
-          withCredentials: true,
-        }
-      );
+      return axios.get('/user-service/api/v1/member/renew-access-token', {
+        withCredentials: true,
+      });
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,

@@ -57,23 +57,11 @@ const PredictContentBox = styled.div`
 
 const PredictResult = styled.div`
   box-sizing: border-box;
-  height: 23rem;
-  max-height: 23rem;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding: 3.2rem 2.21rem 3.2rem 4.85rem;
   border-radius: 1.5rem;
   border: 1px solid #48519b;
   background: rgba(37, 57, 88, 0.35);
-  &::-webkit-scrollbar {
-    width: 0.6rem;
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 1rem;
-    border: 0.1rem solid #48519b;
-    background: linear-gradient(93deg, #fa00ff, #0085ff);
-  }
 `;
 
 const PredictText = styled.pre`
@@ -82,8 +70,8 @@ const PredictText = styled.pre`
   font-size: 1.5rem;
   font-weight: 400;
   line-height: normal;
-  height: 23rem;
-  max-height: 23rem;
+  height: 16.6rem;
+  max-height: 16.6rem;
   width: 51rem;
   overflow-y: auto;
 
@@ -186,7 +174,7 @@ export default function PredictContent({
     if (getChartDataResponse.isSuccess) {
       setChart(getChartDataResponse.data);
     }
-  }, [getChartDataResponse.isSuccess, getChartDataResponse.data]);
+  }, [getChartDataResponse.data, getChartDataResponse.isSuccess]);
 
   return (
     <PredictContentLayout>
@@ -201,33 +189,11 @@ export default function PredictContent({
           <PredictContentBox>
             <PredictContentTitle>Chat gpt의 분석결과</PredictContentTitle>
             <PredictResult>
-              {/* {getAnalysisDataResposne.data} */}
               <PredictText>
                 {getAnalysisDataResposne.isSuccess
                   ? getAnalysisDataResposne.data.gpt_response
                   : null}
               </PredictText>
-              {/* <p>예측률을 계산해보겠습니다</p>
-              <PredictResultData>
-                <DateValuePairGroup>
-                  <p>| 2014-01-12 | 3.15% |</p>
-                  <p>| 2014-01-13 | 4.18% |</p>
-                  <p>| 2014-01-14 | 0.31% |</p>
-                  <p>| 2014-01-15 | 0.17% |</p>
-                  <p>| 2014-01-16 | 1.65% |</p>
-                </DateValuePairGroup>
-                <DateValuePairGroup>
-                  <p>| 2014-01-17 | 3.42%</p>
-                  <p>| 2014-01-18 | 0.53%</p>
-                  <p>| 2014-01-19 | 1.08%</p>
-                  <p>| 2014-01-20 | 0.48%</p>
-                  <p>| 2014-01-21 | 0.00%</p>
-                </DateValuePairGroup>
-              </PredictResultData>
-              <span>
-                예측률은 각 날짜별로 계산되며, 0%에 가까울수록 예측이 정확하다
-                는 의미입니다. 더 높은 예측률은 더 부정확한 예측을 나타냅니다
-              </span> */}
             </PredictResult>
           </PredictContentBox>
           <PredictContentBox>

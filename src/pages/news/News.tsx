@@ -158,14 +158,10 @@ function News() {
                     <NewsCardDate>{newCard.pubDate.slice(0, 16)}</NewsCardDate>
                   </NewsCardInfo>
                   <NewsCardTitle>
-                    {newCard.title
-                      .replace(/<[^>]*>?/g, '')
-                      .replaceAll('&quot;', '')}
+                    {newCard.title.replace(/(?:<[^>]+>)|(&quot;)/g, '')}
                   </NewsCardTitle>
                   <NewsCardDesc>
-                    {newCard.description
-                      .replace(/<[^>]*>?/g, '')
-                      .replaceAll('&quot;', '')}
+                    {newCard.description.replace(/(?:<[^>]+>)|(&quot;)/g, '')}
                   </NewsCardDesc>
                 </NewsCard>
               );
