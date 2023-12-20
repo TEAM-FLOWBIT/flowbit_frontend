@@ -135,9 +135,7 @@ export function useGetChartDataQuery() {
 }
 
 function numberParserToString(data: number) {
-  return Math.floor(data)
-    .toString()
-    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+  return Math.floor(data).toLocaleString();
 }
 
 export function useGetPredictDataQuery() {
@@ -147,14 +145,19 @@ export function useGetPredictDataQuery() {
       return axios.get('/bitcoin-service/get_predict_value');
     },
     select(data) {
-      console.log(data.data);
+      const tempUsd =
+        Math.floor((data.data.predicted_data.predicted_krw / 1300) * 100) / 100;
       return {
         predictKRW: numberParserToString(
           data.data.predicted_data.predicted_krw
         ),
-        predictUSD: numberParserToString(
-          data.data.predicted_data.predicted_usd
-        ),
+        predictUSD: tempUsd.toLocaleString(),
+        // .toString()
+        // .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ','),
+        // TODO 추후 플라스크 재 가동시 다시 사용할 코드
+        // predictUSD: numberParserToString(
+        //   data.data.predicted_data.predicted_usd
+        // ),
         actureKRW: numberParserToString(data.data.actual_data.close_price),
       };
     },
@@ -174,6 +177,8 @@ export function useGetAnalysisDataQuery() {
     select(data) {
       return data.data;
     },
+    staleTime: 60000 * 60 * 2, // 2시간
+    gcTime: 60000 * 60 * 2, // 2시간
   });
   return response;
 }
