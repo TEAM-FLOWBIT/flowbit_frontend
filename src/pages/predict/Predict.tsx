@@ -3,7 +3,7 @@ import PredictContent from './PredictContent';
 import { useGetPredictDataQuery } from '../../hooks/services/queries/chartHook';
 
 export default function Predict() {
-  const { data, isSuccess } = useGetPredictDataQuery();
+  const { data } = useGetPredictDataQuery();
 
   return (
     <>

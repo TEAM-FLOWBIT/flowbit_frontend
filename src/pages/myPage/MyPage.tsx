@@ -58,7 +58,7 @@ export default function MyPage() {
     handleSubmit: formSubmit,
     setError,
     getValues,
-    formState: { errors: formErrors, isValid: formIsValid, isDirty },
+    formState: { errors: formErrors, isValid: isDirty },
   } = useForm<MyPageFormValues>({
     mode: 'onChange',
     defaultValues: {
