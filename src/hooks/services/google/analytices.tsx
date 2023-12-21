@@ -1,11 +1,11 @@
 import ReactGA4 from 'react-ga4';
 
-export const InitializeGoogleAnalytics = () => {
-  const tracking_id = process.env.REACT_APP_GOOGLE_TARGET_ID;
-  tracking_id && ReactGA4.initialize(tracking_id);
+const InitializeGoogleAnalytics = () => {
+  const GA_MEASUREMENT_ID = process.env.REACT_APP_GOOGLE_TARGET_ID;
+  GA_MEASUREMENT_ID && ReactGA4.initialize(GA_MEASUREMENT_ID);
 };
 
-export const TrackGoogleAnalyticsEvent = (category: string, action: string) => {
+const TrackGoogleAnalyticsEvent = (category: string, action: string) => {
   console.log('GA event = ', 'category :', category, ':', 'action :', action);
 
   ReactGA4.event({
@@ -13,3 +13,7 @@ export const TrackGoogleAnalyticsEvent = (category: string, action: string) => {
     action: action,
   });
 };
+
+export default InitializeGoogleAnalytics;
+
+export { InitializeGoogleAnalytics, TrackGoogleAnalyticsEvent };

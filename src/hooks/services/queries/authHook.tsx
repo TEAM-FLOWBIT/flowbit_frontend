@@ -14,7 +14,7 @@ export const useGetAccessTokenByRefresh = () => {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: 2,
+    retry: 1,
     refetchInterval: 60 * 50 * 1000, // 50분마다 토큰 재발급
     refetchIntervalInBackground: true,
   });
