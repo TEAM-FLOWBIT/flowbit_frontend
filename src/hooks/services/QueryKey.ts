@@ -6,4 +6,5 @@ export const QueryKey = {
   CHART: 'chart',
   PREDICT: 'predict',
   ANALYSIS: 'analysis',
+  LINKPREVIEW: 'linkpreview',
 };
