@@ -1,11 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { QueryKey } from '../../hooks/services/QueryKey';
 import styled from 'styled-components';
 import LinkPreview from '../../components/linkPreview/LinkPreview';
-
-const CLIENT_ID = 'iAZJggM5HRZscIi3VbiL';
-const CLIENT_SECRET = 'dsDuo0_LKU';
+import { UseGetNewsQuery } from '../../hooks/services/queries/newsHook';
 
 const NewsLayout = styled.article`
   display: grid;
@@ -121,22 +116,7 @@ interface INewsCard {
 }
 
 function News() {
-  const { isSuccess, data } = useQuery({
-    queryKey: [QueryKey.NEWS],
-    queryFn: () => {
-      return axios.get(
-        '/v1/search/news.json?query=비트코인&display=50&start=1&sort=sim',
-        {
-          headers: {
-            'X-Naver-Client-Id': CLIENT_ID,
-            'X-Naver-Client-Secret': CLIENT_SECRET,
-          },
-        }
-      );
-    },
-    staleTime: 60000 * 60 * 3, // 3시간 동안 캐시 유지
-    gcTime: 60000 * 60 * 3, // 3시간 동안 오프라인이 유지될 경우 캐시 삭제
-  });
+  const { isSuccess, data } = UseGetNewsQuery();
 
   return (
     <>
