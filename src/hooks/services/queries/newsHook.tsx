@@ -22,3 +22,22 @@ export function UseGetNewsQuery() {
 
   return response;
 }
+
+export function UseGetLinkPreviewQuery(url: string) {
+  const { data, isSuccess, isFetching } = useQuery({
+    queryKey: [QueryKey.LINKPREVIEW + url],
+    queryFn: async () => {
+      const response = await fetch(url);
+      const data = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data, 'text/html');
+      const image =
+        doc
+          .querySelector('meta[property="og:image"]')
+          ?.getAttribute('content') || '';
+      return image;
+    },
+  });
+
+  return { data, isSuccess, isFetching };
+}

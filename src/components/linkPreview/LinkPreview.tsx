@@ -1,30 +1,9 @@
-import { useState, useEffect } from 'react';
-import { UseGetLinkPreviewMutation } from '../../hooks/services/mutations/linkPreviewHook';
+import { UseGetLinkPreviewQuery } from '../../hooks/services/queries/newsHook';
 
 function LinkPreview({ url }: { url: string }) {
-  const [previewData, setPreviewData] = useState('');
+  const { data, isSuccess } = UseGetLinkPreviewQuery(url);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const data = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data, 'text/html');
-        const image =
-          doc
-            .querySelector('meta[property="og:image"]')
-            ?.getAttribute('content') || '';
-        setPreviewData(image);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, [url]);
-
-  return <img src={previewData} alt="" />;
+  return isSuccess ? <img src={data} alt="" /> : null;
 }
 
 export default LinkPreview;
