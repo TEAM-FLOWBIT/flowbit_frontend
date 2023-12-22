@@ -83,10 +83,11 @@ export default function Input({
   accept,
   setError,
   initialProfileImage,
+  setProfileFile,
 }: InputProps) {
   const profileURL =
     initialProfileImage !== 'flowbit-default-profile.png'
-      ? IMG_URL + initialProfileImage
+      ? `${IMG_URL}${initialProfileImage}?${Date.now()}`
       : null;
 
   const error = errors[name];
@@ -111,6 +112,9 @@ export default function Input({
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
+        if (setProfileFile) {
+          setProfileFile([file]);
+        }
       };
       reader.readAsDataURL(file);
     }

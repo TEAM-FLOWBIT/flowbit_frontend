@@ -8,6 +8,7 @@ import { QueryKey } from '../../hooks/services/QueryKey';
 import axios from 'axios';
 import { useMember } from '../../hooks/context/authHook';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
 
 const MyPageContainer = styled.div`
   margin: 9.6rem auto 14rem auto;
@@ -49,6 +50,8 @@ const MyPageSignOut = styled.div`
 `;
 
 export default function MyPage() {
+  const [profileFile, setProfileFile] = useState<File[]>([]);
+
   const { member } = useMember();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -93,6 +96,10 @@ export default function MyPage() {
 
   const handleUserInfo = (data: MyPageFormValues) => {
     let formData = new FormData();
+
+    const files = profileFile.map((file) => file);
+    data.profileFile = files;
+
     formData.append('name', data.name);
     formData.append('phoneNumber', data.phone);
     formData.append('password', data.password);
@@ -187,6 +194,7 @@ export default function MyPage() {
                     ? member.memberInfo.profile
                     : 'flowbit-default-profile.png'
                 }
+                setProfileFile={setProfileFile}
               />
             </>
           ) : null}

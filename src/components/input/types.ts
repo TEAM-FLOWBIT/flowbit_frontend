@@ -1,10 +1,11 @@
+import { Dispatch, SetStateAction } from 'react';
 import {
   FieldValues,
   RegisterOptions,
   DeepMap,
   FieldError,
   UseFormSetError,
-} from "react-hook-form";
+} from 'react-hook-form';
 
 export interface InputProps {
   title: string;
@@ -17,6 +18,7 @@ export interface InputProps {
   accept?: string;
   setError?: UseFormSetError<FormValues>;
   initialProfileImage?: string;
+  setProfileFile?: Dispatch<SetStateAction<File[]>>;
 }
 
 export interface FormValues {
@@ -25,12 +27,12 @@ export interface FormValues {
   password: string;
   name: string;
   phone: string;
-  profileFile: FileList;
+  profileFile: (File | null)[];
 }
 
 export interface MyPageFormValues {
   name: string;
   phone: string;
-  profileFile: FileList;
+  profileFile: (File | null)[];
   password: string;
 }
