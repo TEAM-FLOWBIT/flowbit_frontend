@@ -49,7 +49,7 @@ export function chartDataParser(
       data = {
         label: element.label,
         data: element.datas,
-        width: 6,
+        width: 4,
         color: '#fff',
         min: chartDataResponse.min,
         max: chartDataResponse.max,

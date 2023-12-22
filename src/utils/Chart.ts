@@ -585,7 +585,7 @@ export default class Chart {
       const lastPoint = this.createSvgElement('circle', [
         { property: 'cx', value: lastPointPosition[0] + '' },
         { property: 'cy', value: lastPointPosition[1] + '' },
-        { property: 'r', value: '30' },
+        { property: 'r', value: '20' },
         {
           property: 'fill',
           value: (() => {
