@@ -58,7 +58,7 @@ const PredictContentBox = styled.div`
 const PredictResult = styled.div`
   box-sizing: border-box;
   overflow-y: hidden;
-  padding: 3.2rem 2.21rem 3.2rem 4.85rem;
+  padding: 3rem 2rem 3rem 2rem;
   border-radius: 1.5rem;
   border: 1px solid #48519b;
   background: rgba(37, 57, 88, 0.35);

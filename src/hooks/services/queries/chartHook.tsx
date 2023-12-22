@@ -25,6 +25,9 @@ export function chartDataParser(
     },
     datas: [],
     labels: [],
+    zoom: true,
+    showDataCount: 15,
+    showLabelCount: 15,
   };
   const datas: ChartDataType[] = [];
 
@@ -46,7 +49,7 @@ export function chartDataParser(
       data = {
         label: element.label,
         data: element.datas,
-        width: 6,
+        width: 4,
         color: '#fff',
         min: chartDataResponse.min,
         max: chartDataResponse.max,
@@ -122,7 +125,7 @@ export function useGetChartDataQuery() {
   const response = useQuery({
     queryKey: [QueryKey.CHART],
     queryFn: () => {
-      return axios.get('/bitcoin-service/get_basic_chart');
+      return axios.get('/bitcoin-service/get_all_chart');
     },
     select(data) {
       return chartDataParser(data.data);

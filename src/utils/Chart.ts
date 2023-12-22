@@ -7,6 +7,9 @@ export interface ChartType {
   };
   datas: ChartDataType[];
   labels: string[];
+  zoom?: boolean;
+  showDataCount?: number;
+  showLabelCount?: number;
 }
 
 export interface ChartDataType {
@@ -30,19 +33,19 @@ export interface ChartDataType {
   width: number;
 }
 
-interface ChartPaddingType {
+export interface ChartPaddingType {
   left: number;
   bottom: number;
   right: number;
   top: number;
 }
 
-interface AttributeType {
+export interface AttributeType {
   property: string;
   value: string;
 }
 
-class Chart {
+export default class Chart {
   // SVG Container
   private chart: SVGSVGElement;
   private svgNs: string = 'http://www.w3.org/2000/svg';
@@ -55,18 +58,36 @@ class Chart {
   private padding: ChartPaddingType = { bottom: 0, left: 0, top: 0, right: 0 };
 
   private datas: ChartDataType[];
-  private labels: string[]; // x축에서 표현되는 라벨 들
+  private labels: string[]; // x축에서 표현되는 라벨들
+
   private xAxisCount: number; // x축에서 표현되는 라벨의 개수
-  private yAxisCount: number = 10;
+  private yAxisCount: number = 10; // y축에서 표현되는 라벨의 개수
+
+  private maxChartDataCount: number; // 차트 데이터 개수 중 가장 큰 수
+
   private maxData: number = 0; // y축에서 표현되는 가장 큰 수
   private minData: number = 0; // y축에서 표현되는 가장 작은 수
 
   private defaultColor = '#fff';
   private customColorDefs: SVGSVGElement;
 
+  private zoom = false; // 줌인, 줌아웃 기능 추가 여부
+  private showDataCount: number = 0; // 화면에 보여줄 데이터 개수 (zoom 모드에서만 사용하는 변수)
+  private showLabelCount: number = 0; // 화면에 보여줄 라벨 개수 (zoom 모드에서만 사용하는 변수)
+
   constructor(data: ChartType) {
-    const { datas, size, targetId, labels } = data;
-    this.chart = this.createSvgElement('svg');
+    const {
+      datas,
+      size,
+      targetId,
+      labels,
+      zoom = false,
+      showDataCount,
+      showLabelCount,
+    } = data;
+    this.chart = this.createSvgElement('svg', [
+      { property: 'id', value: 'flowbit_svg' },
+    ]);
 
     this.targetId = targetId;
     this.width = size.width;
@@ -76,11 +97,23 @@ class Chart {
     this.datas = datas;
     this.labels = labels;
     this.xAxisCount = labels.length;
-    this.maxData = Math.max(...datas.map((data) => data.max));
-    this.minData = Math.min(...datas.map((data) => data.min));
+    this.maxChartDataCount = Math.max(...datas.map((data) => data.data.length));
     this.customColorDefs = this.createSvgElement('defs', [
       { property: 'class', value: 'customColor' },
     ]);
+
+    // 줌인 줌아웃 기능 활성화
+    if (zoom) {
+      this.showDataCount = showDataCount ? showDataCount : this.xAxisCount;
+      this.showLabelCount = showLabelCount
+        ? showLabelCount
+        : this.labels.length;
+
+      this.zoom = zoom;
+    }
+
+    // 줌인 줌 아웃 기능이 활성화 여부가 결정된 이후에 실행시켜야 함
+    this.setMinMaxData();
 
     this.appendToChart(this.customColorDefs);
     this.getTarget()?.appendChild(this.chart);
@@ -92,6 +125,17 @@ class Chart {
    */
   private getTarget() {
     return document.getElementById(this.targetId);
+  }
+
+  /**
+   * SVG 태그에 생성되는 문자의 길이를 구하는 함수
+   * @param {string} text 길이를 조회할 문자
+   * @returns {number} 문자의 길이 값
+   */
+  private getTextLength(text: string) {
+    const element = this.createSvgElement('text');
+    element.append(text);
+    return this.getBBox(element).width;
   }
 
   /**
@@ -198,24 +242,48 @@ class Chart {
   }
 
   /**
+   * Y 라벨에 표시되는 최대 값 최소 값 범위를 설정하는 함수
+   * @param max Y 라벨에 표시되는 최대 값
+   * @param min Y 라벨에 표시되는 최소 값
+   */
+  private setMinMaxData() {
+    if (this.zoom) {
+      // 줌인 줌 아웃 기능 활성화 시에 사용됨
+      // Set min, max data for datas
+      const newMaxList: number[] = [];
+      const newMinList: number[] = [];
+
+      this.datas.forEach((_) => {
+        const { data } = _;
+        const startIndex = this.maxChartDataCount - this.showDataCount;
+        newMinList.push(Math.min(...data.slice(startIndex)));
+        newMaxList.push(Math.max(...data.slice(startIndex)));
+      });
+      // Set average of the range of min and max
+      let newMax = Math.max(...newMaxList);
+      let newMin = Math.min(...newMinList);
+      const averageOfMinMax = (newMax - newMin) / this.yAxisCount;
+      this.maxData = newMax + averageOfMinMax;
+      this.minData = newMin - averageOfMinMax;
+    } else {
+      this.maxData = Math.max(...this.datas.map((data) => data.max));
+      this.minData = Math.min(...this.datas.map((data) => data.min));
+    }
+  }
+
+  /**
    * Chart의 Padding(상하좌우)를 설정하는 함수
    */
   private setSVGPadding = () => {
-    // 1. Y-Padding
-    // find max y-label length
-    // mix font-size and y-label length
-    // 2. X-Padding
+    const textLength = this.getTextLength(this.maxData + '');
+
     this.padding = {
       ...this.padding,
       // mix font-size and datas.length
       bottom: this.fontSize * 5,
       top: this.fontSize * 5 + this.datas.length * 25,
-      left:
-        (this.fontSize +
-          Math.ceil(Math.log(this.maxData + 1) / Math.LN10) * 10) *
-        2,
-      right:
-        this.fontSize + Math.ceil(Math.log(this.maxData + 1) / Math.LN10) * 10,
+      left: textLength * 2.5,
+      right: textLength,
     };
   };
 
@@ -223,7 +291,7 @@ class Chart {
    * SVG 기본 값을 설정하는 함수
    */
   private setSVGElement = () => {
-    // Make SVG Container
+    // Create SVG Container
     this.chart.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     // Set ViewBox
     this.chart.setAttribute('viewBox', `0 0 ${this.width} ${this.hegiht}`);
@@ -238,6 +306,7 @@ class Chart {
       { property: 'class', value: 'axis' },
       { property: 'stroke', value: '#fff' },
       { property: 'stroke-width', value: '5' },
+      { property: 'id', value: 'flowbit_axios' },
     ]);
 
     // 2. Draw X Axis
@@ -272,58 +341,84 @@ class Chart {
       { property: 'font-size', value: this.fontSize + 'px' },
       { property: 'class', value: 'labels' },
       { property: 'text-anchor', value: 'end' },
+      { property: 'id', value: 'flowbit_label' },
     ]);
     const gTagOfXLabel = this.createSvgElement('g', [
       { property: 'text-anchor', value: 'middle' },
     ]);
     const gTagOfYLabel = this.createSvgElement('g', [
+      { property: 'id', value: 'flowbit_yLabel' },
       { property: 'dominant-baseline', value: 'central' },
     ]);
 
-    // xLabel
-    // eslint-disable-next-line array-callback-return
-    this.labels.map((label, i) => {
-      let x =
-        (i / (this.xAxisCount - 1)) *
-          (this.width - this.padding.left - this.padding.right) +
-        this.padding.left;
-      let y = this.hegiht - this.padding.bottom + this.fontSize * 2;
+    // x label
+    if (this.zoom) {
+      // 줌인 줌 아웃 모드일 경우
+      const increment =
+        this.showLabelCount > this.showDataCount
+          ? 1
+          : Math.ceil(this.showDataCount / this.showLabelCount);
+      for (let i = 0; i < this.showDataCount; i += increment) {
+        let x =
+          (i / (this.showDataCount - 1)) *
+            (this.width - this.padding.left - this.padding.right) +
+          this.padding.left;
+        let y = this.hegiht - this.padding.bottom + this.fontSize * 2;
+        const text = this.createSvgElement('text', [
+          { property: 'x', value: x + '' },
+          { property: 'y', value: y + '' },
+        ]);
 
-      const text = this.createSvgElement('text', [
-        { property: 'x', value: x + '' },
-        { property: 'y', value: y + '' },
-      ]);
+        // TODO labels 위치 변경
+        text.append(this.labels[this.xAxisCount - this.showDataCount + i]);
+        gTagOfXLabel.appendChild(text);
+      }
+    } else {
+      this.labels.forEach((label, i) => {
+        let x =
+          (i / (this.xAxisCount - 1)) *
+            (this.width - this.padding.left - this.padding.right) +
+          this.padding.left;
+        let y = this.hegiht - this.padding.bottom + this.fontSize * 2;
 
-      text.append(label);
+        const text = this.createSvgElement('text', [
+          { property: 'x', value: x + '' },
+          { property: 'y', value: y + '' },
+        ]);
 
-      gTagOfXLabel.appendChild(text);
-    });
+        text.append(label);
 
-    // yLabel
+        gTagOfXLabel.appendChild(text);
+      });
+    }
+
+    // y label
     for (let i = 0; i <= this.yAxisCount; i++) {
-      let x =
-        this.padding.left -
-        Math.ceil(Math.log(this.maxData + 1) / Math.LN10) * 3;
-      let y =
+      // X 좌표 생성
+      const gapFromAxiosAndLabel = 20; // 축과 라벨의 사이 값
+      const x = this.padding.left - gapFromAxiosAndLabel;
+
+      // Y 좌표 생성
+      const y =
         (this.hegiht - this.padding.bottom - this.padding.top) *
           (i / this.yAxisCount) +
         this.padding.top;
-      let label =
+
+      // 텍스트 생성
+      const label =
         ((this.yAxisCount - i) / this.yAxisCount) *
           (this.maxData - this.minData) +
         this.minData;
+      const text = this.createSvgElement('text');
+      text.append(Math.floor(label) + '');
 
-      const text = this.createSvgElement('text', [
+      this.setAttributes(text, [
         { property: 'x', value: x + '' },
         { property: 'y', value: y + '' },
       ]);
 
-      text.append(Math.floor(label) + '');
-
       gTagOfYLabel.appendChild(text);
     }
-
-    // label box
 
     this.appendChilds(gTagOfText, [gTagOfXLabel, gTagOfYLabel]);
     this.appendToChart(gTagOfText);
@@ -359,23 +454,23 @@ class Chart {
     }
 
     // y축 가이드 라인
-    for (let i = 0; i <= this.xAxisCount - 1; i++) {
-      const x =
-        (i / (this.xAxisCount - 1)) *
-          (this.width - this.padding.left - this.padding.right) +
-        this.padding.left;
-      const y1 = this.hegiht - this.padding.bottom;
-      const y2 = this.padding.top;
+    // for (let i = 0; i <= this.xAxisCount - 1; i++) {
+    //   const x =
+    //     (i / (this.xAxisCount - 1)) *
+    //       (this.width - this.padding.left - this.padding.right) +
+    //     this.padding.left;
+    //   const y1 = this.hegiht - this.padding.bottom;
+    //   const y2 = this.padding.top;
 
-      const line = this.createSvgElement('line', [
-        { property: 'x1', value: x + '' },
-        { property: 'x2', value: x + '' },
-        { property: 'y1', value: y1 + '' },
-        { property: 'y2', value: y2 + '' },
-      ]);
+    //   const line = this.createSvgElement('line', [
+    //     { property: 'x1', value: x + '' },
+    //     { property: 'x2', value: x + '' },
+    //     { property: 'y1', value: y1 + '' },
+    //     { property: 'y2', value: y2 + '' },
+    //   ]);
 
-      gTagOfLine.appendChild(line);
-    }
+    //   gTagOfLine.appendChild(line);
+    // }
 
     this.appendToChart(gTagOfLine);
   };
@@ -385,32 +480,65 @@ class Chart {
    */
   private setPoints = () => {
     // make g container
-    const gTagOfPolyLine = this.createSvgElement('g');
+    const gTagOfPolyLine = this.createSvgElement('g', [
+      { property: 'id', value: 'flowbit_datas' },
+    ]);
     gTagOfPolyLine.classList.add('datas');
-    // set line
-    for (let i = 0; i < this.datas.length; i++) {
-      const data = this.datas[i];
-      let pointList = data.data.map((value, j) => {
-        let x =
-          (j / this.datas[0].data.length) *
-            (this.width - this.padding.left - this.padding.right) +
-          this.padding.left;
-        let y =
-          this.hegiht -
-          this.padding.top -
-          this.padding.bottom -
-          (this.hegiht - this.padding.bottom - this.padding.top) *
-            ((value - this.minData) / (this.maxData - this.minData)) +
-          this.padding.top;
 
-        return `${x},${y}`;
-      });
+    for (let i = 0; i < this.datas.length; i++) {
+      // SET Poly Line
+      const { data, customColor, width } = this.datas[i];
+
+      let pointList: string[] = [];
+      if (this.zoom) {
+        // 줌인 줌아웃 기능 활성화한 버전
+        // 가장 긴 데이터 리스트와의 길이 차이
+        const diff = this.maxChartDataCount - data.length;
+        for (
+          let j = data.length - this.showDataCount + diff;
+          j < data.length;
+          j++
+        ) {
+          const value = data[j];
+          let x =
+            ((j - (data.length - this.showDataCount + diff)) /
+              (this.showDataCount - 1)) *
+              (this.width - this.padding.left - this.padding.right) +
+            this.padding.left;
+          let y =
+            this.hegiht -
+            this.padding.top -
+            this.padding.bottom -
+            (this.hegiht - this.padding.bottom - this.padding.top) *
+              ((value - this.minData) / (this.maxData - this.minData)) +
+            this.padding.top;
+
+          pointList.push(`${x},${y}`);
+        }
+      } else {
+        // 줌인 줌아웃 기능 비활성화 버전
+        pointList = data.map((value, j) => {
+          let x =
+            (j / this.datas[0].data.length) *
+              (this.width - this.padding.left - this.padding.right) +
+            this.padding.left;
+          let y =
+            this.hegiht -
+            this.padding.top -
+            this.padding.bottom -
+            (this.hegiht - this.padding.bottom - this.padding.top) *
+              ((value - this.minData) / (this.maxData - this.minData)) +
+            this.padding.top;
+
+          return `${x},${y}`;
+        });
+      }
 
       // set color
       // let customColor = data.customColor().border;
       let borderCustomColor = '';
-      if (data.customColor) {
-        let customColorElement = data.customColor().border;
+      if (customColor) {
+        let customColorElement = customColor().border;
         if (customColorElement) {
           borderCustomColor = this.setCustomColor(customColorElement);
         }
@@ -426,21 +554,22 @@ class Chart {
             if (borderCustomColor !== '') {
               color = `url('#${borderCustomColor}')`;
             } else {
-              color = data.color;
+              // eslint-disable-next-line no-self-assign
+              color = color;
             }
             return color === undefined ? this.defaultColor : color;
           })(),
         },
         { property: 'fill', value: 'none' },
-        { property: 'stroke-width', value: data.width + '' },
+        { property: 'stroke-width', value: width + '' },
         { property: 'stroke-linecap', value: 'round' },
         { property: 'stroke-linejoin', value: 'round' },
       ]);
 
-      // draw last point circle
+      // Draw last point circle
       let lastPointCustomColor = '';
-      if (data.customColor) {
-        let customColorElement = data.customColor().lastPoint;
+      if (customColor) {
+        let customColorElement = customColor().lastPoint;
         if (customColorElement) {
           lastPointCustomColor = this.setCustomColor(customColorElement);
         }
@@ -452,11 +581,11 @@ class Chart {
         .split(',')
         .map((point) => Number(point));
 
-      // Gradient
+      // Set LastPoint Gradient
       const lastPoint = this.createSvgElement('circle', [
         { property: 'cx', value: lastPointPosition[0] + '' },
         { property: 'cy', value: lastPointPosition[1] + '' },
-        { property: 'r', value: '30' },
+        { property: 'r', value: '20' },
         {
           property: 'fill',
           value: (() => {
@@ -478,8 +607,7 @@ class Chart {
               const radialStop1 = this.createSvgElement('stop', [
                 {
                   property: 'stop-color',
-                  value:
-                    data.color === undefined ? this.defaultColor : data.color,
+                  value: color === undefined ? this.defaultColor : color,
                 },
                 {
                   property: 'offset',
@@ -491,8 +619,7 @@ class Chart {
                 { property: 'stop-opacity', value: '0' },
                 {
                   property: 'stop-color',
-                  value:
-                    data.color === undefined ? this.defaultColor : data.color,
+                  value: color === undefined ? this.defaultColor : color,
                 },
               ]);
               radialGradientTag.appendChild(radialStop1);
@@ -508,7 +635,55 @@ class Chart {
       this.appendChilds(gTagOfPolyLine, [polyLine, lastPoint]);
     }
 
+    // 데이터의 영역 설정(커서 표시)
+    const Area = this.setArea({
+      x: this.padding.left + '',
+      y: this.padding.top + '',
+      width: this.width - this.padding.right - this.padding.left + '',
+      height: this.hegiht - this.padding.top - this.padding.bottom + '',
+    });
+
+    Area.style.cursor =
+      'url("https://www.bithumb.com/react/charting_library/sta…es/crosshair.6c091f7d5427d0c5e6d9dc3a90eb2b20.cur"),crosshair';
+    this.appendChilds(gTagOfPolyLine, [Area]);
     this.appendToChart(gTagOfPolyLine);
+  };
+
+  /**
+   * Chart의 데이터 영역을 지정하는 함수
+   * 줌인 줌 아웃 등 여러 이벤트 영역에 필요한 범위를 설정함
+   * @param {x: string, y: string, width: string, hegiht: string} param
+   * @returns SVGElement
+   */
+  private setArea = ({
+    x,
+    y,
+    width,
+    height,
+  }: {
+    x: string;
+    y: string;
+    width: string;
+    height: string;
+  }) => {
+    const Area = this.createSvgElement('rect', [
+      { property: 'x', value: x },
+      { property: 'y', value: y },
+      {
+        property: 'width',
+        value: width,
+      },
+      {
+        property: 'height',
+        value: height,
+      },
+      {
+        property: 'fill-opacity',
+        value: '0',
+      },
+    ]);
+
+    return Area;
   };
 
   /**
@@ -588,6 +763,48 @@ class Chart {
   };
 
   /**
+   * Chart의 Zoom 기능을 설정하는 함수
+   */
+  private setZoomAction = () => {
+    this.chart.addEventListener('mousewheel', (e: any) => {
+      e.preventDefault();
+      // 데이터 범위 재조정
+      if (e.deltaY > 0) {
+        // Scroll Down
+        if (this.showDataCount > 4) this.showDataCount -= 3;
+      } else {
+        // Scroll Up
+        if (this.showDataCount < this.maxChartDataCount - 3)
+          this.showDataCount += 3;
+      }
+
+      // TODO 축을 새로 생성할 필요 없이 flowchart_data를 감싸는 또 다른 g태그를 만들자
+
+      // 차트 데이터의 최대 최소 값 재설정
+      this.setMinMaxData();
+
+      // 차트 라벨 다시 그리기
+      document.getElementById('flowbit_label')?.remove();
+      this.setLabel();
+
+      // 재조정 된 데이터 다시 셋팅
+      document.getElementById('flowbit_datas')?.remove();
+      this.setPoints();
+
+      // 데이터가 축 위로 올라오는 현상을 방지하기 위해 다시 셋팅
+      document.getElementById('flowbit_axios')?.remove();
+      this.setAxis();
+    });
+  };
+
+  /**
+   * Chart의 Interaction 기능을 설정하는 함수
+   */
+  private setInteraction = () => {
+    if (this.zoom) this.setZoomAction();
+  };
+
+  /**
    * Chart를 그리는 함수
    */
   public render = () => {
@@ -598,6 +815,12 @@ class Chart {
     // 1. Set Padding
     this.setSVGPadding();
 
+    // Draw X and Y Label
+    this.setLabel();
+
+    // Draw Legend
+    this.setLegend();
+
     // Draw GuideLine
     this.setGuideLine();
 
@@ -607,12 +830,7 @@ class Chart {
     // Draw X and Y Axis
     this.setAxis();
 
-    // Draw X and Y Label
-    this.setLabel();
-
-    // Draw Legend
-    this.setLegend();
+    // Set Interaction
+    this.setInteraction();
   };
 }
-
-export default Chart;

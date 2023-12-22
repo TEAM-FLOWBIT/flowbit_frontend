@@ -6,6 +6,8 @@ import Predict from './predict/Predict';
 import styled from 'styled-components';
 import { useGetMemberInfo } from '../hooks/services/queries/authHook';
 import { initialMemberInfo } from '../hooks/context/authHook';
+import { useUpdateVisitorMutation } from '../hooks/services/mutations/visitorHook';
+import { getCookie, setCookie } from '../utils/Cookies';
 // import { InitializeGoogleAnalytics } from '../hooks/services/google/analytices';
 
 const RootLayout = styled.div`
@@ -58,10 +60,37 @@ function Root() {
 
   const { accessToken, memberInfo, isSucess } = getMemberInfo();
 
+  const { updateVisitorMutation } = useUpdateVisitorMutation();
+
   // TODO Google Analytics 연동
   // useEffect(() => {
   //   InitializeGoogleAnalytics();
   // }, []);
+
+  // TODO 방문자 수 업데이트
+  useEffect(() => {
+    const isVisited = getCookie('isVisited');
+    // isVisited 쿠키 값이 없을 경우
+    if (!isVisited) {
+      // 현재 날짜와 시간을 가져옵니다.
+      const now = new Date();
+
+      // 다음 날의 날짜와 시간을 계산합니다.
+      const nextDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1
+      );
+      nextDate.setHours(0);
+      nextDate.setMinutes(0);
+
+      updateVisitorMutation.mutate();
+
+      setCookie('isVisited', true, {
+        expires: nextDate,
+      });
+    }
+  }, [updateVisitorMutation]);
 
   useEffect(() => {
     isSucess &&

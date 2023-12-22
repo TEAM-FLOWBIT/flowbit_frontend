@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import { InputProps } from "./types";
-import { ReactComponent as ErrorIcon } from "../../assets/ErrorIcon.svg";
-import { BaseInputProps } from "../listInput/types";
-import { useState } from "react";
-import { ReactComponent as ImageBox } from "../../assets/ImageBoxL.svg";
-import { IMG_URL } from "../../pages/Root";
+import styled from 'styled-components';
+import { InputProps } from './types';
+import { ReactComponent as ErrorIcon } from '../../assets/ErrorIcon.svg';
+import { BaseInputProps } from '../listInput/types';
+import { useState } from 'react';
+import { ReactComponent as ImageBox } from '../../assets/ImageBoxL.svg';
+import { IMG_URL } from '../../pages/Root';
 
 const InputLayout = styled.div`
   display: flex;
@@ -27,9 +27,9 @@ const DefaultInput = styled.input<BaseInputProps>`
   width: 48rem;
   height: 7rem;
   border-radius: 1rem;
-  border: 0.1rem solid ${(props) => (props.hasError ? "#fa00ff" : "#48519b")};
+  border: 0.1rem solid ${(props) => (props.hasError ? '#fa00ff' : '#48519b')};
   background: ${(props) =>
-    props.hasError ? "rgba(250, 0, 255, 0.1)" : "rgba(37, 57, 88, 0.35)"};
+    props.hasError ? 'rgba(250, 0, 255, 0.1)' : 'rgba(37, 57, 88, 0.35)'};
   padding: 2.6rem 0 2.6rem 2rem;
   font-family: Pretendard;
   color: #fff;
@@ -60,7 +60,7 @@ const ProfileInput = styled.label<BaseInputProps>`
     position: absolute;
     z-index: 2;
     path {
-      stroke: ${(props) => (props.preview ? "white" : "#48519B")};
+      stroke: ${(props) => (props.preview ? 'white' : '#48519B')};
     }
   }
 `;
@@ -79,13 +79,13 @@ export default function Input({
   register,
   rules,
   errors,
-  type = "text",
+  type = 'text',
   accept,
   setError,
   initialProfileImage,
 }: InputProps) {
   const profileURL =
-    initialProfileImage !== "flowbit-default-profile.png"
+    initialProfileImage !== 'flowbit-default-profile.png'
       ? IMG_URL + initialProfileImage
       : null;
 
@@ -99,11 +99,11 @@ export default function Input({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0];
-      if (file && !file.type.startsWith("image/")) {
+      if (file && !file.type.startsWith('image/')) {
         if (setError) {
-          setError("profileFile", {
-            type: "fileType",
-            message: "올바른 형태가 아닙니다",
+          setError('profileFile', {
+            type: 'fileType',
+            message: '올바른 형태가 아닙니다',
           });
         }
         return;
@@ -119,7 +119,7 @@ export default function Input({
   return (
     <InputLayout>
       <span>{title}</span>
-      {type === "file" ? (
+      {type === 'file' ? (
         <ProfileInput preview={preview} hasError={!!error}>
           <DefaultInput
             {...ref}
