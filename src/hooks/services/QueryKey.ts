@@ -7,4 +7,5 @@ export const QueryKey = {
   PREDICT: 'predict',
   ANALYSIS: 'analysis',
   LINKPREVIEW: 'linkpreview',
+  VISITOR: 'visitor',
 };

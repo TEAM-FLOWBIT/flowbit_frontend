@@ -6,7 +6,7 @@ import Predict from './predict/Predict';
 import styled from 'styled-components';
 import { useGetMemberInfo } from '../hooks/services/queries/authHook';
 import { initialMemberInfo } from '../hooks/context/authHook';
-import { useUpdateVisitorMutation } from '../hooks/services/mutations/visitHook';
+import { useUpdateVisitorMutation } from '../hooks/services/mutations/visitorHook';
 import { getCookie, setCookie } from '../utils/Cookies';
 // import { InitializeGoogleAnalytics } from '../hooks/services/google/analytices';
 

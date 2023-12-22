@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { UseGetVisitorQuery } from '../../hooks/services/queries/visitorHook';
 
 const PredictMainBanner = styled.div`
   display: flex;
@@ -114,6 +115,8 @@ export default function PredictMain({
   predictKRW: string;
   predictUSD: string;
 }) {
+  const { data, isSuccess } = UseGetVisitorQuery();
+
   return (
     <PredictMainBanner>
       <PredictGradationTop />
@@ -121,11 +124,11 @@ export default function PredictMain({
         <PredictMainTitle>
           <PredictSubTitle>유일한 비트코인 예측 서비스</PredictSubTitle>
           <span>FLOWBIT</span>
-          {/* <PredictLine />
+          <PredictLine />
           <PredictDesc>
             <span>오늘 하루 방문자</span>
-            <span>000,000,000 명</span>
-          </PredictDesc> */}
+            <span>{isSuccess ? data.toLocaleString() : ''} 명</span>
+          </PredictDesc>
         </PredictMainTitle>
         <PredictMainContent>
           <svg
