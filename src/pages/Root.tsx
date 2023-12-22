@@ -85,6 +85,7 @@ function Root() {
       nextDate.setMinutes(0);
 
       updateVisitorMutation.mutate();
+
       setCookie('isVisited', true, {
         expires: nextDate,
       });

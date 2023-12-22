@@ -282,7 +282,7 @@ export default function SignUp() {
               required: '전화번호가 필요해요!',
               pattern: {
                 value: /^\d{3}-\d{4}-\d{4}$/,
-                message: '올바른 전화번호 형식이 아닙니다.',
+                message: '올바른 전화번호 형식(010-0000-0000)이 아닙니다.',
               },
             }}
             errors={formErrors}

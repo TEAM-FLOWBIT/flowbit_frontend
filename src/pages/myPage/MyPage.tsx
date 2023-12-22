@@ -69,11 +69,15 @@ export default function MyPage() {
 
   const modifyUserMutation = useMutation({
     mutationFn: (formData: FormData) => {
-      return axios.post('/user-service/api/v1/member', formData, {
-        headers: {
-          Authorization: `Bearer ${member.auth}`,
-        },
-      });
+      return axios.post(
+        '/user-service/api/v1/member/profile-update',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${member.auth}`,
+          },
+        }
+      );
     },
     onSuccess() {
       queryClient.invalidateQueries({
@@ -92,7 +96,6 @@ export default function MyPage() {
     formData.append('name', data.name);
     formData.append('phoneNumber', data.phone);
     formData.append('password', data.password);
-    // formData.append('memberId', member.memberInfo.id.toString());
     data.profileFile[0] && formData.append('profileFile', data.profileFile[0]);
 
     modifyUserMutation.mutate(formData);
