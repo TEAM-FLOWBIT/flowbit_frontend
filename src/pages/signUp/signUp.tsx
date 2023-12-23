@@ -77,6 +77,7 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [countdown, setCountdown] = useState(3 * 60); // 3분
+  const [profileFile, setProfileFile] = useState<File[]>([]);
 
   useEffect(() => {
     let timerId: NodeJS.Timeout;
@@ -166,6 +167,9 @@ export default function SignUp() {
 
   const handleSignUp = (data: FormValues) => {
     let formData = new FormData();
+
+    const files = profileFile.map((file) => file);
+    data.profileFile = files;
 
     formData.append('userId', data.userId);
     formData.append('name', data.name);
@@ -296,6 +300,7 @@ export default function SignUp() {
             accept="image/*"
             errors={formErrors}
             setError={setError}
+            setProfileFile={setProfileFile}
           />
         </SignUpInputBox>
         <SignUpButtonBox>
