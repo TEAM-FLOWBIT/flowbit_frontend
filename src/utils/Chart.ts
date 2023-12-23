@@ -770,12 +770,12 @@ export default class Chart {
       e.preventDefault();
       // 데이터 범위 재조정
       if (e.deltaY > 0) {
-        // Scroll Down
-        if (this.showDataCount > 4) this.showDataCount -= 3;
-      } else {
         // Scroll Up
         if (this.showDataCount < this.maxChartDataCount - 3)
           this.showDataCount += 3;
+      } else {
+        // Scroll Down
+        if (this.showDataCount > 4) this.showDataCount -= 3;
       }
 
       // TODO 축을 새로 생성할 필요 없이 flowchart_data를 감싸는 또 다른 g태그를 만들자
