@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { QueryKey } from '../QueryKey';
 import axios from 'axios';
 
 export function UseGetNewsQuery() {
-  const response = useQuery({
+  const response = useSuspenseQuery({
     queryKey: [QueryKey.NEWS],
     queryFn: () => {
       return axios.get(
