@@ -127,7 +127,9 @@ export default function PredictMain({
           <PredictLine />
           <PredictDesc>
             <span>오늘 하루 방문자</span>
-            <span>{isSuccess ? data.toLocaleString() : ''} 명</span>
+            {isSuccess ? (
+              <span>{data !== 0 ? data.toLocaleString() : 0} 명</span>
+            ) : null}
           </PredictDesc>
         </PredictMainTitle>
         <PredictMainContent>
