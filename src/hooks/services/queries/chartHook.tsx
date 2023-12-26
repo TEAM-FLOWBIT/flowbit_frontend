@@ -25,6 +25,9 @@ export function chartDataParser(
     },
     datas: [],
     labels: [],
+    backgroundColor: 'rgba(37, 57, 88, 0.35)',
+    hoverCardBackgroundColor:
+      'linear-gradient(107deg, rgba(250, 0, 255, 0.48) -36.41%, rgba(72, 81, 155, 0.78) 75.37%)',
     zoom: true,
     showDataCount: 15,
     showLabelCount: 15,
@@ -60,7 +63,6 @@ export function chartDataParser(
             ns,
             'linearGradient'
           );
-          linearGradientTag.setAttribute('gradientTransform', 'rotate(90)');
 
           const linearStop1 = document.createElementNS(ns, 'stop');
           linearStop1.setAttribute('stop-color', '#FA00FF');

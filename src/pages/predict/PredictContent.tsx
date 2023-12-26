@@ -39,7 +39,6 @@ const PredictGraphBox = styled.article`
   height: 65.8636rem;
   border-radius: 1.5rem;
   border: 1px solid #48519b;
-  background: rgba(37, 57, 88, 0.35);
   overflow: hidden;
 `;
 
