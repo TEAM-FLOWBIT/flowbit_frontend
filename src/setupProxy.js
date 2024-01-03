@@ -1,39 +1,15 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function (app) {
-  // app.use(
-  //   createProxyMiddleware('/user-service/api/v1/member/info', {
-  //     target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
-  //     changeOrigin: true,
-  //   })
-  // );
-  // app.use(
-  //   createProxyMiddleware('/user-service/api/v1/board', {
-  //     target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
-  //     changeOrigin: true,
-  //   })
-  // );
-  // app.use(
-  //   createProxyMiddleware('/user-service/api/v1/mail', {
-  //     target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
-  //     changeOrigin: true,
-  //   })
-  // );
-  // app.use(
-  //   createProxyMiddleware('/user-service/api/v1/mail/verify', {
-  //     target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
-  //     changeOrigin: true,
-  //   })
-  // );
   app.use(
     createProxyMiddleware('/bitcoin-service', {
-      target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
+      target: 'https://api.flowbit.co.kr',
       changeOrigin: true,
     })
   );
   app.use(
     createProxyMiddleware('/user-service', {
-      target: 'https://apigateway.apps.sys.paas-ta-dev10.kr',
+      target: 'https://api.flowbit.co.kr',
       changeOrigin: true,
     })
   );
