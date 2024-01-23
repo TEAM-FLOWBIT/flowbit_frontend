@@ -72,10 +72,7 @@ export function UseSignMutation() {
 
   const signUpMutaion = useMutation({
     mutationFn: (formData: FormData) => {
-      return axios.post(
-        'https://apigateway.apps.sys.paas-ta-dev10.kr/user-service/api/v1/member',
-        formData
-      );
+      return axios.post('/user-service/api/v1/member', formData);
     },
     onSuccess: () => {
       alert('회원가입에 성공했습니다.');
